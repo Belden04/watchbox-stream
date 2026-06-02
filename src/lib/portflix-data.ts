@@ -24,7 +24,10 @@ export type Movie = {
   director: string;
   description: string;
   downloads: number;
+  is_translated: boolean;
+  video_url?: string | null;
 };
+
 
 export type Highlight = {
   id: string;
@@ -37,13 +40,14 @@ export type Highlight = {
 };
 
 export const MOVIES: Movie[] = [
-  { id: "m1", title: "Neon Horizon", poster: poster1, year: 2024, genre: "Sci-Fi Thriller", rating: 8.7, duration: "2h 14m", language: "EN/KIN", country: "USA", translator: "Belden Right", director: "Ava Chen", description: "In a city that never sleeps, one driver must outrun his past to save the future of a digital civilization.", downloads: 124500 },
-  { id: "m2", title: "Kigali Nights", poster: poster2, year: 2024, genre: "Drama / Romance", rating: 9.1, duration: "1h 48m", language: "KIN/EN", country: "Rwanda", translator: "Belden Right", director: "Eric Kabera", description: "Two souls collide under the golden Kigali skyline in a story about love, loss, and reinvention.", downloads: 98230 },
-  { id: "m3", title: "Ancestors' Call", poster: poster3, year: 2023, genre: "Historical Epic", rating: 8.4, duration: "2h 32m", language: "EN/FR", country: "Senegal", director: "Mati Diop", description: "A sweeping epic of warriors who marched into the sunrise to defend their homeland.", downloads: 76110 },
-  { id: "m4", title: "Echoes of Tomorrow", poster: poster4, year: 2024, genre: "Cyberpunk", rating: 8.2, duration: "1h 56m", language: "EN", country: "UK", director: "Alex Garland", description: "A cyber-hacker discovers a signal from a future that may never come.", downloads: 145600 },
-  { id: "m5", title: "Underground Kings", poster: poster5, year: 2023, genre: "Crime Drama", rating: 8.9, duration: "2h 08m", language: "EN/KIN", country: "USA", translator: "Belden Right", director: "Denis Villeneuve", description: "Rain-soaked streets, fast cars, and the empire one man built in the shadows.", downloads: 188900 },
-  { id: "m6", title: "Adlen'Ann", poster: poster6, year: 2024, genre: "Fantasy Adventure", rating: 9.3, duration: "2h 41m", language: "KIN/EN", country: "Rwanda", translator: "Belden Right", director: "Joel Karekezi", description: "A lone warrior climbs the sacred mountain to break a thousand-year curse.", downloads: 201400 },
+  { id: "m1", title: "Neon Horizon", poster: poster1, year: 2024, genre: "Sci-Fi Thriller", rating: 8.7, duration: "2h 14m", language: "EN/KIN", country: "USA", translator: "Belden Right", director: "Ava Chen", description: "In a city that never sleeps, one driver must outrun his past to save the future of a digital civilization.", downloads: 124500, is_translated: true },
+  { id: "m2", title: "Kigali Nights", poster: poster2, year: 2024, genre: "Drama / Romance", rating: 9.1, duration: "1h 48m", language: "KIN/EN", country: "Rwanda", translator: "Belden Right", director: "Eric Kabera", description: "Two souls collide under the golden Kigali skyline in a story about love, loss, and reinvention.", downloads: 98230, is_translated: true },
+  { id: "m3", title: "Ancestors' Call", poster: poster3, year: 2023, genre: "Historical Epic", rating: 8.4, duration: "2h 32m", language: "EN/FR", country: "Senegal", director: "Mati Diop", description: "A sweeping epic of warriors who marched into the sunrise to defend their homeland.", downloads: 76110, is_translated: false },
+  { id: "m4", title: "Echoes of Tomorrow", poster: poster4, year: 2024, genre: "Cyberpunk", rating: 8.2, duration: "1h 56m", language: "EN", country: "UK", director: "Alex Garland", description: "A cyber-hacker discovers a signal from a future that may never come.", downloads: 145600, is_translated: false },
+  { id: "m5", title: "Underground Kings", poster: poster5, year: 2023, genre: "Crime Drama", rating: 8.9, duration: "2h 08m", language: "EN/KIN", country: "USA", translator: "Belden Right", director: "Denis Villeneuve", description: "Rain-soaked streets, fast cars, and the empire one man built in the shadows.", downloads: 188900, is_translated: true },
+  { id: "m6", title: "Adlen'Ann", poster: poster6, year: 2024, genre: "Fantasy Adventure", rating: 9.3, duration: "2h 41m", language: "KIN/EN", country: "Rwanda", translator: "Belden Right", director: "Joel Karekezi", description: "A lone warrior climbs the sacred mountain to break a thousand-year curse.", downloads: 201400, is_translated: true },
 ];
+
 
 export const TRENDING = [MOVIES[5], MOVIES[3], MOVIES[1], MOVIES[4], MOVIES[0], MOVIES[2]];
 export const MOST_DOWNLOADED = [...MOVIES].sort((a, b) => b.downloads - a.downloads);

@@ -29,8 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkRole = async (uid: string | undefined) => {
     if (!uid) return setIsAdmin(false);
-    const { data } = await supabase
-      .from("user_roles")
+    const { data } = await db.from("user_roles")
       .select("role")
       .eq("user_id", uid)
       .eq("role", "admin")

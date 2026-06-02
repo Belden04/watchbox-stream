@@ -39,8 +39,8 @@ function AdminPage() {
 
   const load = async () => {
     const [m, h] = await Promise.all([
-      supabase.from("movies").select("*").order("created_at", { ascending: false }),
-      supabase.from("highlights").select("*").order("created_at", { ascending: false }),
+      db.from("movies").select("*").order("created_at", { ascending: false }),
+      db.from("highlights").select("*").order("created_at", { ascending: false }),
     ]);
     setMovies((m.data as Movie[]) ?? []);
     setHighlights((h.data as Highlight[]) ?? []);
@@ -78,7 +78,7 @@ function AdminPage() {
           </p>
           <button
             onClick={async () => {
-              const { data, error } = await supabase.rpc("claim_admin");
+              const { data, error } = await db.rpc("claim_admin");
               if (error) return toast.error(error.message);
               if (data) {
                 toast.success("You are now admin!");
@@ -151,7 +151,7 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
     try {
       const poster_url = await uploadTo("posters", poster);
       const video_url = video ? await uploadTo("videos", video) : null;
-      const { error } = await supabase.from("movies").insert({ ...form, poster_url, video_url });
+      const { error } = await db.from("movies").insert({ ...form, poster_url, video_url });
       if (error) throw error;
       toast.success("Movie uploaded");
       setPoster(null);
@@ -208,14 +208,14 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
 
 function MovieList({ movies, reload }: { movies: Movie[]; reload: () => void }) {
   const toggleTrending = async (m: Movie) => {
-    const { error } = await supabase.from("movies").update({ is_trending: !m.is_trending }).eq("id", m.id);
+    const { error } = await db.from("movies").update({ is_trending: !m.is_trending }).eq("id", m.id);
     if (error) return toast.error(error.message);
     toast.success(m.is_trending ? "Removed from trending" : "Added to trending");
     reload();
   };
   const del = async (id: string) => {
     if (!confirm("Delete this movie?")) return;
-    const { error } = await supabase.from("movies").delete().eq("id", id);
+    const { error } = await db.from("movies").delete().eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Deleted");
     reload();
@@ -264,7 +264,7 @@ function UploadHighlightForm({ onDone }: { onDone: () => void }) {
     try {
       const thumbnail_url = await uploadTo("thumbnails", thumb);
       const video_url = video ? await uploadTo("videos", video) : null;
-      const { error } = await supabase.from("highlights").insert({ ...form, thumbnail_url, video_url });
+      const { error } = await db.from("highlights").insert({ ...form, thumbnail_url, video_url });
       if (error) throw error;
       toast.success("Highlight uploaded");
       setThumb(null);
@@ -312,7 +312,7 @@ function UploadHighlightForm({ onDone }: { onDone: () => void }) {
 function HighlightList({ highlights, reload }: { highlights: Highlight[]; reload: () => void }) {
   const del = async (id: string) => {
     if (!confirm("Delete this highlight?")) return;
-    const { error } = await supabase.from("highlights").delete().eq("id", id);
+    const { error } = await db.from("highlights").delete().eq("id", id);
     if (error) return toast.error(error.message);
     toast.success("Deleted");
     reload();

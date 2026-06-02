@@ -1,28 +1,64 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { MOVIES, CATEGORIES } from "@/lib/portflix-data";
+import { MOVIES, CATEGORIES, type Movie } from "@/lib/portflix-data";
 import { MovieCard } from "@/components/portflix/MovieCard";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/movies")({
   head: () => ({
     meta: [
       { title: "Movies — PORTFLIX" },
-      { name: "description", content: "Browse and download translated and non-translated movies. Search by title, genre, year, country, director, actor, language, translator." },
+      { name: "description", content: "Browse translated (umusobanuwe) and non-translated movies. Search by title, genre, director, country, language, year, or translator." },
       { property: "og:title", content: "Movies — PORTFLIX" },
-      { property: "og:description", content: "Browse and download premium movies." },
     ],
   }),
   component: MoviesPage,
 });
 
+const db = supabase as any;
+
 function MoviesPage() {
   const [q, setQ] = useState("");
   const [genre, setGenre] = useState("All");
+  const [tab, setTab] = useState<"all" | "translated" | "non">("all");
+  const [dbMovies, setDbMovies] = useState<Movie[]>([]);
+
+  useEffect(() => {
+    db.from("movies")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .then(({ data }: { data: any[] | null }) => {
+        if (!data) return;
+        setDbMovies(
+          data.map((m) => ({
+            id: m.id,
+            title: m.title,
+            poster: m.poster_url,
+            year: m.year,
+            genre: m.genre,
+            rating: Number(m.rating ?? 0),
+            duration: m.duration ?? "",
+            language: m.language ?? "EN",
+            country: m.country ?? "",
+            translator: m.translator ?? undefined,
+            director: m.director ?? "",
+            description: m.description ?? "",
+            downloads: m.downloads ?? 0,
+            is_translated: !!m.is_translated,
+            video_url: m.video_url,
+          }))
+        );
+      });
+  }, []);
+
+  const all = useMemo(() => [...dbMovies, ...MOVIES], [dbMovies]);
 
   const filtered = useMemo(() => {
     const ql = q.toLowerCase();
-    return MOVIES.filter((m) => {
+    return all.filter((m) => {
+      if (tab === "translated" && !m.is_translated) return false;
+      if (tab === "non" && m.is_translated) return false;
       const matchQ =
         !ql ||
         m.title.toLowerCase().includes(ql) ||
@@ -35,17 +71,38 @@ function MoviesPage() {
       const matchG = genre === "All" || m.genre.includes(genre);
       return matchQ && matchG;
     });
-  }, [q, genre]);
+  }, [q, genre, tab, all]);
+
+  const tabs: { key: typeof tab; label: string; count: number }[] = [
+    { key: "all", label: "All", count: all.length },
+    { key: "translated", label: "Translated (Umusobanuwe)", count: all.filter((m) => m.is_translated).length },
+    { key: "non", label: "Non-Translated", count: all.filter((m) => !m.is_translated).length },
+  ];
 
   return (
     <div className="pt-24">
       <div className="mx-auto max-w-[1600px] px-4 md:px-8">
-        <header className="mb-10 space-y-4">
+        <header className="mb-8 space-y-4">
           <h1 className="font-display text-5xl font-black tracking-tighter md:text-6xl">Movies</h1>
           <p className="max-w-2xl text-muted-foreground">
-            Translated and non-translated films from around the world. Search by title, genre, director, country, language, year, or translator (Umusobanuzi).
+            Translated and non-translated films from around the world.
           </p>
         </header>
+
+        <div className="mb-6 flex flex-wrap gap-2 border-b border-border">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`relative px-4 py-3 text-sm font-bold transition-colors ${
+                tab === t.key ? "text-primary" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t.label} <span className="ml-1 text-xs opacity-70">({t.count})</span>
+              {tab === t.key && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />}
+            </button>
+          ))}
+        </div>
 
         <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
           <div className="relative flex-1">

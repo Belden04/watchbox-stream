@@ -13,6 +13,11 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Navbar } from "../components/portflix/Navbar";
 import { Footer } from "../components/portflix/Footer";
+import { Splash } from "../components/portflix/Splash";
+import { AuthProvider } from "../lib/auth";
+import { Toaster } from "sonner";
+import logoAsset from "../assets/portflix-logo.png.asset.json";
+
 
 function NotFoundComponent() {
   return (

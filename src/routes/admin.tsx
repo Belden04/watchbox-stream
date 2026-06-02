@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Trash2, Upload, Star, Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+const db = supabase as any;
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin")({

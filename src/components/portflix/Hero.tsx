@@ -1,18 +1,8 @@
 import { useEffect, useState } from "react";
 import { Play, Download, Plus } from "lucide-react";
-import heroStadium from "@/assets/hero-stadium.jpg";
 import { MOVIES } from "@/lib/portflix-data";
 
 const SLIDES = [
-  {
-    type: "highlight" as const,
-    badge: "LIVE · RWANDA LEAGUE",
-    title: "RAYON SPORTS\nVS APR FC",
-    meta: "Kigali Derby · 90 mins · 4K",
-    description: "The fiercest derby in East African football — every goal, every chance, every roar of the crowd.",
-    image: heroStadium,
-    accent: true,
-  },
   {
     type: "movie" as const,
     badge: "FEATURED MOVIE",
@@ -31,7 +21,17 @@ const SLIDES = [
     image: MOVIES[4].poster,
     accent: false,
   },
+  {
+    type: "movie" as const,
+    badge: "NEW RELEASE",
+    title: MOVIES[0].title.toUpperCase(),
+    meta: `${MOVIES[0].year} · ${MOVIES[0].duration} · ⭐ ${MOVIES[0].rating}`,
+    description: MOVIES[0].description,
+    image: MOVIES[0].poster,
+    accent: false,
+  },
 ];
+
 
 export function Hero() {
   const [idx, setIdx] = useState(0);
@@ -77,10 +77,10 @@ export function Hero() {
             </span>
             <span className="text-sm font-medium text-muted-foreground">{slide.meta}</span>
           </div>
-          <h1 className="font-display text-5xl font-black leading-[0.9] tracking-tighter whitespace-pre-line md:text-7xl lg:text-8xl">
+          <h1 className="font-display text-3xl font-black leading-[0.95] tracking-tighter whitespace-pre-line md:text-5xl lg:text-6xl">
             {slide.title}
           </h1>
-          <p className="max-w-xl text-base text-muted-foreground md:text-lg">{slide.description}</p>
+          <p className="max-w-xl text-sm text-muted-foreground md:text-base">{slide.description}</p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button className="group flex items-center gap-2 rounded-md bg-primary px-7 py-3 font-bold text-primary-foreground transition-all hover:scale-105 hover:shadow-[var(--shadow-glow-primary)]">
               <Play className="size-4 fill-current" />

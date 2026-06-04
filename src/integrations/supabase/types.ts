@@ -14,16 +14,151 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      highlights: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          duration: string | null
+          id: string
+          thumbnail_url: string
+          title: string
+          video_url: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          id?: string
+          thumbnail_url: string
+          title: string
+          video_url?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          duration?: string | null
+          id?: string
+          thumbnail_url?: string
+          title?: string
+          video_url?: string | null
+        }
+        Relationships: []
+      }
+      movies: {
+        Row: {
+          country: string | null
+          created_at: string
+          description: string | null
+          director: string | null
+          duration: string | null
+          genre: string | null
+          id: string
+          is_translated: boolean
+          is_trending: boolean
+          language: string | null
+          poster_url: string
+          rating: number | null
+          title: string
+          translator: string | null
+          video_url: string | null
+          year: number | null
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          description?: string | null
+          director?: string | null
+          duration?: string | null
+          genre?: string | null
+          id?: string
+          is_translated?: boolean
+          is_trending?: boolean
+          language?: string | null
+          poster_url: string
+          rating?: number | null
+          title: string
+          translator?: string | null
+          video_url?: string | null
+          year?: number | null
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          description?: string | null
+          director?: string | null
+          duration?: string | null
+          genre?: string | null
+          id?: string
+          is_translated?: boolean
+          is_trending?: boolean
+          language?: string | null
+          poster_url?: string
+          rating?: number | null
+          title?: string
+          translator?: string | null
+          video_url?: string | null
+          year?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      claim_admin: { Args: never; Returns: boolean }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +285,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "user"],
+    },
   },
 } as const

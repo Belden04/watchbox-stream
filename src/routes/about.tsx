@@ -4,10 +4,10 @@ import { Target, Eye, Sparkles, Users, Film, Trophy, Download } from "lucide-rea
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — PORTFLIX" },
-      { name: "description", content: "PORTFLIX is a premium streaming platform for movies and sports highlights, founded by Belden Right." },
-      { property: "og:title", content: "About PORTFLIX" },
-      { property: "og:description", content: "Our mission, vision, and the story behind PORTFLIX." },
+      { title: "About — SPORTFLIX" },
+      { name: "description", content: "SPORTFLIX is a premium streaming platform for movies and sports highlights, founded by Belden Right." },
+      { property: "og:title", content: "About SPORTFLIX" },
+      { property: "og:description", content: "Our mission, vision, and the story behind SPORTFLIX." },
     ],
   }),
   component: AboutPage,
@@ -29,7 +29,7 @@ function AboutPage() {
           Premium streaming, <span className="text-gradient-primary">built in Kigali</span>.
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          PORTFLIX brings world-class movies and the biggest sports moments to fans across Africa and beyond — with first-class translations and the fastest downloads in the game.
+          SPORTFLIX brings world-class movies and the biggest sports moments to fans across Africa and beyond — with first-class translations and the fastest downloads in the game.
         </p>
       </section>
 
@@ -39,7 +39,7 @@ function AboutPage() {
           {[
             { icon: Target, title: "Mission", body: "Make the best movies and sports highlights accessible to every fan — translated, downloadable, and beautifully presented." },
             { icon: Eye, title: "Vision", body: "Become Africa's most-loved streaming destination by putting story, sport, and local language at the center." },
-            { icon: Sparkles, title: "Our Story", body: "Born from a love of cinema and stadium roars, PORTFLIX was built to celebrate both — without compromise on quality or access." },
+            { icon: Sparkles, title: "Our Story", body: "Born from a love of cinema and stadium roars, SPORTFLIX was built to celebrate both — without compromise on quality or access." },
           ].map((c) => (
             <div key={c.title} className="rounded-2xl border border-border bg-surface p-8 hover-lift">
               <div className="mb-4 grid size-12 place-items-center rounded-lg bg-primary/10 text-primary">
@@ -81,7 +81,7 @@ function AboutPage() {
               Frontend Developer · Digital Creator
             </p>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              Passionate about sports, entertainment, and modern technology. Belden built PORTFLIX to celebrate the stories and stadiums that define a generation — with the polish of a global streaming brand and the soul of a Kigali night.
+              Passionate about sports, entertainment, and modern technology. Belden built SPORTFLIX to celebrate the stories and stadiums that define a generation — with the polish of a global streaming brand and the soul of a Kigali night.
             </p>
           </div>
         </div>

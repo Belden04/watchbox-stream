@@ -7,7 +7,7 @@ const db = supabase as any;
 import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Admin — PORTFLIX" }] }),
+  head: () => ({ meta: [{ title: "Admin — SPORTFLIX" }] }),
   component: AdminPage,
 });
 
@@ -58,7 +58,7 @@ function AdminPage() {
         <div className="max-w-md space-y-4 rounded-xl border border-border bg-surface p-8 text-center">
           <Crown className="mx-auto size-10 text-primary" />
           <h1 className="font-display text-2xl font-black">Admin access</h1>
-          <p className="text-sm text-muted-foreground">You need to sign in to manage PORTFLIX.</p>
+          <p className="text-sm text-muted-foreground">You need to sign in to manage SPORTFLIX.</p>
           <Link to="/login" className="inline-block rounded-md bg-primary px-6 py-2 font-bold text-primary-foreground">
             Sign in
           </Link>
@@ -74,7 +74,7 @@ function AdminPage() {
           <Crown className="mx-auto size-10 text-primary" />
           <h1 className="font-display text-2xl font-black">Become admin</h1>
           <p className="text-sm text-muted-foreground">
-            If no admin exists yet, you can claim ownership of this PORTFLIX instance.
+            If no admin exists yet, you can claim ownership of this SPORTFLIX instance.
           </p>
           <button
             onClick={async () => {
@@ -100,7 +100,7 @@ function AdminPage() {
         <header className="flex items-center justify-between">
           <div>
             <h1 className="font-display text-4xl font-black tracking-tighter">Admin Console</h1>
-            <p className="text-sm text-muted-foreground">Upload, trend, and curate the PORTFLIX library.</p>
+            <p className="text-sm text-muted-foreground">Upload, trend, and curate the SPORTFLIX library.</p>
           </div>
           <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
             <Crown className="-mt-0.5 mr-1 inline size-3" /> Admin

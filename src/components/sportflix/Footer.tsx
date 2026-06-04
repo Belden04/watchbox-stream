@@ -68,7 +68,7 @@ export function Footer() {
       </div>
 
       <div className="mx-auto mt-16 flex max-w-[1600px] flex-col items-center justify-between gap-4 border-t border-border px-4 pt-8 text-xs uppercase tracking-widest text-muted-foreground md:flex-row md:px-8">
-        <p>© {new Date().getFullYear()} PORTFLIX. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} SPORTFLIX. All rights reserved.</p>
         <p>
           Crafted by <span className="font-bold text-primary">Belden Right</span>
         </p>

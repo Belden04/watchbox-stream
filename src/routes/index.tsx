@@ -1,25 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Hero } from "@/components/portflix/Hero";
-import { Rail } from "@/components/portflix/Rail";
-import { MovieCard } from "@/components/portflix/MovieCard";
+import { Hero } from "@/components/sportflix/Hero";
+import { Rail } from "@/components/sportflix/Rail";
+import { MovieCard } from "@/components/sportflix/MovieCard";
 import {
   TRENDING,
   RECENTLY_ADDED,
   PREMIUM_PLANS,
-} from "@/lib/portflix-data";
+} from "@/lib/sportflix-data";
 import { Link } from "@tanstack/react-router";
 import { Check, Zap } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "PORTFLIX — Stream Premium Movies" },
+      { title: "SPORTFLIX — Stream Premium Movies" },
       {
         name: "description",
         content:
           "Watch and download translated and non-translated movies. New uploads and trending titles every week. No login required.",
       },
-      { property: "og:title", content: "PORTFLIX — Premium Movies" },
+      { property: "og:title", content: "SPORTFLIX — Premium Movies" },
       { property: "og:description", content: "Trending movies and new uploads. No login required." },
     ],
   }),

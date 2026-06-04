@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================
-   PORTFLIX — Design System
+   SPORTFLIX — Design System
    Palette: Black canvas, Orange primary, Green sports accent, White type
    ============================================ */
 
@@ -109,7 +109,7 @@
 }
 
 .dark {
-  /* Same as root — PORTFLIX is dark-native */
+  /* Same as root — SPORTFLIX is dark-native */
   --background: oklch(0.05 0 0);
   --foreground: oklch(0.98 0 0);
 }

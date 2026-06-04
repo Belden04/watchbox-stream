@@ -1,16 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { MOVIES, CATEGORIES, type Movie } from "@/lib/portflix-data";
-import { MovieCard } from "@/components/portflix/MovieCard";
+import { MOVIES, CATEGORIES, type Movie } from "@/lib/sportflix-data";
+import { MovieCard } from "@/components/sportflix/MovieCard";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/movies")({
   head: () => ({
     meta: [
-      { title: "Movies — PORTFLIX" },
+      { title: "Movies — SPORTFLIX" },
       { name: "description", content: "Browse translated (umusobanuwe) and non-translated movies. Search by title, genre, director, country, language, year, or translator." },
-      { property: "og:title", content: "Movies — PORTFLIX" },
+      { property: "og:title", content: "Movies — SPORTFLIX" },
     ],
   }),
   component: MoviesPage,

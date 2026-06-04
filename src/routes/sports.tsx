@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { HIGHLIGHTS, SPORT_CATEGORIES } from "@/lib/portflix-data";
-import { HighlightCard } from "@/components/portflix/HighlightCard";
+import { HIGHLIGHTS, SPORT_CATEGORIES } from "@/lib/sportflix-data";
+import { HighlightCard } from "@/components/sportflix/HighlightCard";
 
 export const Route = createFileRoute("/sports")({
   head: () => ({
     meta: [
-      { title: "Sports Highlights — PORTFLIX" },
+      { title: "Sports Highlights — SPORTFLIX" },
       { name: "description", content: "Watch and download highlights from Football, Basketball, Volleyball, World Cup, Champions League, AFCON, and Rwanda League." },
-      { property: "og:title", content: "Sports Highlights — PORTFLIX" },
+      { property: "og:title", content: "Sports Highlights — SPORTFLIX" },
       { property: "og:description", content: "Football, Basketball, AFCON, Champions League, Rwanda League highlights." },
     ],
   }),

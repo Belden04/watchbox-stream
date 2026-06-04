@@ -77,10 +77,10 @@ export function Hero() {
             </span>
             <span className="text-sm font-medium text-muted-foreground">{slide.meta}</span>
           </div>
-          <h1 className="font-display text-5xl font-black leading-[0.9] tracking-tighter whitespace-pre-line md:text-7xl lg:text-8xl">
+          <h1 className="font-display text-3xl font-black leading-[0.95] tracking-tighter whitespace-pre-line md:text-5xl lg:text-6xl">
             {slide.title}
           </h1>
-          <p className="max-w-xl text-base text-muted-foreground md:text-lg">{slide.description}</p>
+          <p className="max-w-xl text-sm text-muted-foreground md:text-base">{slide.description}</p>
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button className="group flex items-center gap-2 rounded-md bg-primary px-7 py-3 font-bold text-primary-foreground transition-all hover:scale-105 hover:shadow-[var(--shadow-glow-primary)]">
               <Play className="size-4 fill-current" />

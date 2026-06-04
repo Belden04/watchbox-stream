@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Search, Menu, X, User, Crown, LogOut, Shield } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import logo from "@/assets/portflix-logo.png.asset.json";
+import logo from "@/assets/sportflix-logo.png.asset.json";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -34,7 +34,7 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 md:px-8">
         <div className="flex items-center gap-10">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo.url} alt="PORTFLIX" className="h-8 w-auto" />
+            <img src={logo.url} alt="SPORTFLIX" className="h-8 w-auto" />
             <span className="font-display text-xl font-extrabold tracking-tighter text-primary md:text-2xl">
               PORT<span className="text-foreground">FLIX</span>
             </span>

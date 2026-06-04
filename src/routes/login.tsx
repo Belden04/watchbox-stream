@@ -3,13 +3,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import logo from "@/assets/portflix-logo.png.asset.json";
+import logo from "@/assets/sportflix-logo.png.asset.json";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Sign In — PORTFLIX" },
-      { name: "description", content: "Sign in or create an account on PORTFLIX." },
+      { title: "Sign In — SPORTFLIX" },
+      { name: "description", content: "Sign in or create an account on SPORTFLIX." },
     ],
   }),
   component: LoginPage,
@@ -37,7 +37,7 @@ function LoginPage() {
           },
         });
         if (error) throw error;
-        toast.success("Account created — welcome to PORTFLIX!");
+        toast.success("Account created — welcome to SPORTFLIX!");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -55,9 +55,9 @@ function LoginPage() {
     <div className="grid min-h-screen place-items-center px-4 pt-24">
       <div className="w-full max-w-md space-y-6 rounded-2xl border border-border bg-surface p-8">
         <div className="flex flex-col items-center gap-3">
-          <img src={logo.url} alt="PORTFLIX" className="h-12 w-auto" />
+          <img src={logo.url} alt="SPORTFLIX" className="h-12 w-auto" />
           <h1 className="font-display text-3xl font-black">
-            {mode === "signin" ? "Welcome back" : "Join PORTFLIX"}
+            {mode === "signin" ? "Welcome back" : "Join SPORTFLIX"}
           </h1>
           <p className="text-center text-sm text-muted-foreground">
             Watching and downloading work without an account. Sign in to manage uploads, watchlist & comments.

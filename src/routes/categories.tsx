@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CATEGORIES, SPORT_CATEGORIES } from "@/lib/portflix-data";
+import { CATEGORIES, SPORT_CATEGORIES } from "@/lib/sportflix-data";
 
 export const Route = createFileRoute("/categories")({
   head: () => ({
     meta: [
-      { title: "Categories — PORTFLIX" },
-      { name: "description", content: "Browse PORTFLIX by movie genre or sports category." },
+      { title: "Categories — SPORTFLIX" },
+      { name: "description", content: "Browse SPORTFLIX by movie genre or sports category." },
     ],
   }),
   component: CategoriesPage,

@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Zap } from "lucide-react";
-import { PREMIUM_PLANS } from "@/lib/portflix-data";
+import { PREMIUM_PLANS } from "@/lib/sportflix-data";
 
 export const Route = createFileRoute("/premium")({
   head: () => ({
     meta: [
-      { title: "Premium — PORTFLIX" },
+      { title: "Premium — SPORTFLIX" },
       { name: "description", content: "Go Premium for ad-free, 4K Ultra HD, exclusive originals, faster downloads, and early access." },
-      { property: "og:title", content: "PORTFLIX Premium" },
+      { property: "og:title", content: "SPORTFLIX Premium" },
       { property: "og:description", content: "Ad-free 4K streaming, exclusive content, faster downloads." },
     ],
   }),
@@ -26,7 +26,7 @@ function PremiumPage() {
             Built for <span className="text-gradient-primary">superfans</span>.
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">
-            Watch as a guest, or unlock the full PORTFLIX arena — zero ads, 4K, exclusive drops, faster downloads.
+            Watch as a guest, or unlock the full SPORTFLIX arena — zero ads, 4K, exclusive drops, faster downloads.
           </p>
         </header>
 

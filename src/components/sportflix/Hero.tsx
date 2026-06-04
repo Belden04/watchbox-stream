@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Play, Download, Plus } from "lucide-react";
-import { MOVIES } from "@/lib/portflix-data";
+import { MOVIES } from "@/lib/sportflix-data";
 
 const SLIDES = [
   {

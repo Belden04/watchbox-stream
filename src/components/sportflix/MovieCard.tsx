@@ -1,6 +1,6 @@
 import { Play, Download, Plus } from "lucide-react";
 import { useState } from "react";
-import type { Movie } from "@/lib/portflix-data";
+import type { Movie } from "@/lib/sportflix-data";
 import { WatchDialog } from "./WatchDialog";
 
 type Props = {

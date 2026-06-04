@@ -1,6 +1,6 @@
 import { Play, Download, Bookmark } from "lucide-react";
 import { useState } from "react";
-import type { Highlight } from "@/lib/portflix-data";
+import type { Highlight } from "@/lib/sportflix-data";
 import { WatchDialog } from "./WatchDialog";
 
 export function HighlightCard({ h }: { h: Highlight & { video_url?: string | null } }) {

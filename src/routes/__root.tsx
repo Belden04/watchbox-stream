@@ -11,12 +11,12 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { Navbar } from "../components/portflix/Navbar";
-import { Footer } from "../components/portflix/Footer";
-import { Splash } from "../components/portflix/Splash";
+import { Navbar } from "../components/sportflix/Navbar";
+import { Footer } from "../components/sportflix/Footer";
+import { Splash } from "../components/sportflix/Splash";
 import { AuthProvider } from "../lib/auth";
 import { Toaster } from "sonner";
-import logoAsset from "../assets/portflix-logo.png.asset.json";
+import logoAsset from "../assets/sportflix-logo.png.asset.json";
 
 
 function NotFoundComponent() {
@@ -33,7 +33,7 @@ function NotFoundComponent() {
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-transform hover:scale-105"
           >
-            Back to PORTFLIX
+            Back to SPORTFLIX
           </Link>
         </div>
       </div>
@@ -83,17 +83,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#0d0d0d" },
-      { title: "PORTFLIX — Premium Movies & Sports Highlights" },
+      { title: "SPORTFLIX — Premium Movies & Sports Highlights" },
       {
         name: "description",
         content:
           "Stream and download premium movies (translated & non-translated) and world-class sports highlights — Football, Basketball, AFCON, Champions League, Rwanda League, World Cup. Watch as a guest, upgrade for 4K.",
       },
       { name: "author", content: "Belden Right" },
-      { property: "og:title", content: "PORTFLIX — Premium Movies & Sports Highlights" },
+      { property: "og:title", content: "SPORTFLIX — Premium Movies & Sports Highlights" },
       { property: "og:description", content: "Stream and download premium movies and sports highlights. Watch as a guest." },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "PORTFLIX" },
+      { property: "og:site_name", content: "SPORTFLIX" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [

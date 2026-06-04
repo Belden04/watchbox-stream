@@ -4,7 +4,7 @@ import { Bookmark } from "lucide-react";
 export const Route = createFileRoute("/watchlist")({
   head: () => ({
     meta: [
-      { title: "Watchlist — PORTFLIX" },
+      { title: "Watchlist — SPORTFLIX" },
       { name: "description", content: "Your saved movies and highlights." },
     ],
   }),

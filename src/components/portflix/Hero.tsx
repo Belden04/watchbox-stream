@@ -1,18 +1,8 @@
 import { useEffect, useState } from "react";
 import { Play, Download, Plus } from "lucide-react";
-import heroStadium from "@/assets/hero-stadium.jpg";
 import { MOVIES } from "@/lib/portflix-data";
 
 const SLIDES = [
-  {
-    type: "highlight" as const,
-    badge: "LIVE · RWANDA LEAGUE",
-    title: "RAYON SPORTS\nVS APR FC",
-    meta: "Kigali Derby · 90 mins · 4K",
-    description: "The fiercest derby in East African football — every goal, every chance, every roar of the crowd.",
-    image: heroStadium,
-    accent: true,
-  },
   {
     type: "movie" as const,
     badge: "FEATURED MOVIE",
@@ -31,7 +21,17 @@ const SLIDES = [
     image: MOVIES[4].poster,
     accent: false,
   },
+  {
+    type: "movie" as const,
+    badge: "NEW RELEASE",
+    title: MOVIES[0].title.toUpperCase(),
+    meta: `${MOVIES[0].year} · ${MOVIES[0].duration} · ⭐ ${MOVIES[0].rating}`,
+    description: MOVIES[0].description,
+    image: MOVIES[0].poster,
+    accent: false,
+  },
 ];
+
 
 export function Hero() {
   const [idx, setIdx] = useState(0);

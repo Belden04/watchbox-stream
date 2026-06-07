@@ -1,19 +1,10 @@
-import poster1 from "@/assets/poster-1.jpg";
-import poster2 from "@/assets/poster-2.jpg";
-import poster3 from "@/assets/poster-3.jpg";
-import poster4 from "@/assets/poster-4.jpg";
-import poster5 from "@/assets/poster-5.jpg";
-import poster6 from "@/assets/poster-6.jpg";
-import sportFootball from "@/assets/sport-football.jpg";
-import sportBasketball from "@/assets/sport-basketball.jpg";
-import sportWorldcup from "@/assets/sport-worldcup.jpg";
-import sportRwanda from "@/assets/sport-rwanda.jpg";
-import sportVolleyball from "@/assets/sport-volleyball.jpg";
+// Type definitions and static lists. All movies & highlights now come from the database.
 
 export type Movie = {
   id: string;
   title: string;
   poster: string;
+  thumbnail?: string | null;
   year: number;
   genre: string;
   rating: number;
@@ -28,54 +19,23 @@ export type Movie = {
   video_url?: string | null;
 };
 
-
 export type Highlight = {
   id: string;
   title: string;
   thumbnail: string;
-  category: "Football" | "Basketball" | "Volleyball" | "World Cup" | "Champions League" | "AFCON" | "Rwanda League";
+  category: string;
   duration: string;
   description: string;
   views: number;
+  video_url?: string | null;
 };
-
-export const MOVIES: Movie[] = [
-  { id: "m1", title: "Neon Horizon", poster: poster1, year: 2024, genre: "Sci-Fi Thriller", rating: 8.7, duration: "2h 14m", language: "EN/KIN", country: "USA", translator: "Belden Right", director: "Ava Chen", description: "In a city that never sleeps, one driver must outrun his past to save the future of a digital civilization.", downloads: 124500, is_translated: true },
-  { id: "m2", title: "Kigali Nights", poster: poster2, year: 2024, genre: "Drama / Romance", rating: 9.1, duration: "1h 48m", language: "KIN/EN", country: "Rwanda", translator: "Belden Right", director: "Eric Kabera", description: "Two souls collide under the golden Kigali skyline in a story about love, loss, and reinvention.", downloads: 98230, is_translated: true },
-  { id: "m3", title: "Ancestors' Call", poster: poster3, year: 2023, genre: "Historical Epic", rating: 8.4, duration: "2h 32m", language: "EN/FR", country: "Senegal", director: "Mati Diop", description: "A sweeping epic of warriors who marched into the sunrise to defend their homeland.", downloads: 76110, is_translated: false },
-  { id: "m4", title: "Echoes of Tomorrow", poster: poster4, year: 2024, genre: "Cyberpunk", rating: 8.2, duration: "1h 56m", language: "EN", country: "UK", director: "Alex Garland", description: "A cyber-hacker discovers a signal from a future that may never come.", downloads: 145600, is_translated: false },
-  { id: "m5", title: "Underground Kings", poster: poster5, year: 2023, genre: "Crime Drama", rating: 8.9, duration: "2h 08m", language: "EN/KIN", country: "USA", translator: "Belden Right", director: "Denis Villeneuve", description: "Rain-soaked streets, fast cars, and the empire one man built in the shadows.", downloads: 188900, is_translated: true },
-  { id: "m6", title: "Adlen'Ann", poster: poster6, year: 2024, genre: "Fantasy Adventure", rating: 9.3, duration: "2h 41m", language: "KIN/EN", country: "Rwanda", translator: "Belden Right", director: "Joel Karekezi", description: "A lone warrior climbs the sacred mountain to break a thousand-year curse.", downloads: 201400, is_translated: true },
-];
-
-
-export const TRENDING = [MOVIES[5], MOVIES[3], MOVIES[1], MOVIES[4], MOVIES[0], MOVIES[2]];
-export const MOST_DOWNLOADED = [...MOVIES].sort((a, b) => b.downloads - a.downloads);
-export const RECENTLY_ADDED = [MOVIES[1], MOVIES[5], MOVIES[3], MOVIES[0], MOVIES[2], MOVIES[4]];
-export const RECOMMENDED = [MOVIES[2], MOVIES[0], MOVIES[5], MOVIES[1], MOVIES[4], MOVIES[3]];
-export const CONTINUE_WATCHING = [
-  { ...MOVIES[0], progress: 64 },
-  { ...MOVIES[3], progress: 22 },
-  { ...MOVIES[5], progress: 88 },
-];
-
-export const HIGHLIGHTS: Highlight[] = [
-  { id: "h1", title: "Real Madrid vs Man City — Top Goals & Saves", thumbnail: sportFootball, category: "Champions League", duration: "12:45", description: "Every goal, every save from the semifinal classic.", views: 2_450_000 },
-  { id: "h2", title: "BAL Finals — Top 10 Dunks of the Season", thumbnail: sportBasketball, category: "Basketball", duration: "08:20", description: "The most explosive dunks from the Basketball Africa League.", views: 1_120_000 },
-  { id: "h3", title: "World Cup Final — The Road to Victory", thumbnail: sportWorldcup, category: "World Cup", duration: "15:00", description: "Every moment that crowned a new champion.", views: 8_900_000 },
-  { id: "h4", title: "APR FC vs Rayon Sports — Kigali Derby", thumbnail: sportRwanda, category: "Rwanda League", duration: "10:32", description: "The fiercest derby in East African football.", views: 540_000 },
-  { id: "h5", title: "Volleyball Smash Compilation", thumbnail: sportVolleyball, category: "Volleyball", duration: "06:48", description: "The hardest spikes of the season.", views: 320_000 },
-  { id: "h6", title: "AFCON Best Moments", thumbnail: sportFootball, category: "AFCON", duration: "14:12", description: "The road to the African championship.", views: 3_120_000 },
-  { id: "h7", title: "El Clásico — Goals That Shook Madrid", thumbnail: sportFootball, category: "Football", duration: "09:55", description: "Iconic moments from football's biggest rivalry.", views: 5_780_000 },
-  { id: "h8", title: "NBA Buzzer Beaters", thumbnail: sportBasketball, category: "Basketball", duration: "07:30", description: "Last-second magic that defined careers.", views: 4_200_000 },
-];
 
 export const CATEGORIES = [
   "Action", "Drama", "Romance", "Sci-Fi", "Thriller", "Comedy", "Horror", "Animation",
   "Crime", "Fantasy", "Historical", "Documentary", "Cyberpunk", "Adventure",
 ];
 
-export const SPORT_CATEGORIES: Highlight["category"][] = [
+export const SPORT_CATEGORIES = [
   "Football", "Basketball", "Volleyball", "World Cup", "Champions League", "AFCON", "Rwanda League",
 ];
 
@@ -84,3 +44,39 @@ export const PREMIUM_PLANS = [
   { name: "Gold", price: 4.99, period: "per month", features: ["Zero ads", "Full HD streaming", "Faster downloads", "Watchlist & history", "Early access drops"], cta: "Go Gold", highlight: true },
   { name: "Platinum", price: 9.99, period: "per month", features: ["Everything in Gold", "4K Ultra HD", "Exclusive originals", "8 device profiles", "Offline download bank"], cta: "Go Platinum", highlight: false },
 ];
+
+/** Map a raw DB row → Movie. */
+export function mapMovieRow(m: any): Movie {
+  return {
+    id: m.id,
+    title: m.title,
+    poster: m.poster_url,
+    thumbnail: m.thumbnail_url ?? null,
+    year: m.year ?? new Date().getFullYear(),
+    genre: m.genre ?? "",
+    rating: Number(m.rating ?? 0),
+    duration: m.duration ?? "",
+    language: m.language ?? "EN",
+    country: m.country ?? "",
+    translator: m.translator ?? undefined,
+    director: m.director ?? "",
+    description: m.description ?? "",
+    downloads: m.downloads ?? 0,
+    is_translated: !!m.is_translated,
+    video_url: m.video_url,
+  };
+}
+
+/** Map a raw DB row → Highlight. */
+export function mapHighlightRow(h: any): Highlight {
+  return {
+    id: h.id,
+    title: h.title,
+    thumbnail: h.thumbnail_url,
+    category: h.category ?? "Football",
+    duration: h.duration ?? "",
+    description: h.description ?? "",
+    views: h.views ?? 0,
+    video_url: h.video_url,
+  };
+}

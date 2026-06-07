@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import { MOVIES, CATEGORIES, type Movie } from "@/lib/sportflix-data";
+import { CATEGORIES, mapMovieRow, type Movie } from "@/lib/sportflix-data";
 import { MovieCard } from "@/components/sportflix/MovieCard";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -9,8 +9,7 @@ export const Route = createFileRoute("/movies")({
   head: () => ({
     meta: [
       { title: "Movies — SPORTFLIX" },
-      { name: "description", content: "Browse translated (umusobanuwe) and non-translated movies. Search by title, genre, director, country, language, year, or translator." },
-      { property: "og:title", content: "Movies — SPORTFLIX" },
+      { name: "description", content: "Browse translated (umusobanuwe) and non-translated movies." },
     ],
   }),
   component: MoviesPage,
@@ -22,41 +21,22 @@ function MoviesPage() {
   const [q, setQ] = useState("");
   const [genre, setGenre] = useState("All");
   const [tab, setTab] = useState<"all" | "translated" | "non">("all");
-  const [dbMovies, setDbMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     db.from("movies")
       .select("*")
       .order("created_at", { ascending: false })
       .then(({ data }: { data: any[] | null }) => {
-        if (!data) return;
-        setDbMovies(
-          data.map((m) => ({
-            id: m.id,
-            title: m.title,
-            poster: m.poster_url,
-            year: m.year,
-            genre: m.genre,
-            rating: Number(m.rating ?? 0),
-            duration: m.duration ?? "",
-            language: m.language ?? "EN",
-            country: m.country ?? "",
-            translator: m.translator ?? undefined,
-            director: m.director ?? "",
-            description: m.description ?? "",
-            downloads: m.downloads ?? 0,
-            is_translated: !!m.is_translated,
-            video_url: m.video_url,
-          }))
-        );
+        setMovies((data ?? []).map(mapMovieRow));
+        setLoading(false);
       });
   }, []);
 
-  const all = useMemo(() => [...dbMovies, ...MOVIES], [dbMovies]);
-
   const filtered = useMemo(() => {
     const ql = q.toLowerCase();
-    return all.filter((m) => {
+    return movies.filter((m) => {
       if (tab === "translated" && !m.is_translated) return false;
       if (tab === "non" && m.is_translated) return false;
       const matchQ =
@@ -71,12 +51,12 @@ function MoviesPage() {
       const matchG = genre === "All" || m.genre.includes(genre);
       return matchQ && matchG;
     });
-  }, [q, genre, tab, all]);
+  }, [q, genre, tab, movies]);
 
   const tabs: { key: typeof tab; label: string; count: number }[] = [
-    { key: "all", label: "All", count: all.length },
-    { key: "translated", label: "Translated (Umusobanuwe)", count: all.filter((m) => m.is_translated).length },
-    { key: "non", label: "Non-Translated", count: all.filter((m) => !m.is_translated).length },
+    { key: "all", label: "All", count: movies.length },
+    { key: "translated", label: "Translated (Umusobanuwe)", count: movies.filter((m) => m.is_translated).length },
+    { key: "non", label: "Non-Translated", count: movies.filter((m) => !m.is_translated).length },
   ];
 
   return (
@@ -85,7 +65,7 @@ function MoviesPage() {
         <header className="mb-8 space-y-4">
           <h1 className="font-display text-5xl font-black tracking-tighter md:text-6xl">Movies</h1>
           <p className="max-w-2xl text-muted-foreground">
-            Translated and non-translated films from around the world.
+            Translated and non-translated films, uploaded by the SPORTFLIX team.
           </p>
         </header>
 
@@ -131,9 +111,13 @@ function MoviesPage() {
           </div>
         </div>
 
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="grid place-items-center py-24 text-muted-foreground">Loading…</div>
+        ) : filtered.length === 0 ? (
           <div className="grid place-items-center py-24 text-muted-foreground">
-            No movies match your search.
+            {movies.length === 0
+              ? "No movies have been uploaded yet."
+              : "No movies match your search."}
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4 pb-20 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">

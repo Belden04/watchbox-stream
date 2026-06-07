@@ -1,15 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { HIGHLIGHTS, SPORT_CATEGORIES } from "@/lib/sportflix-data";
+import { useEffect, useMemo, useState } from "react";
+import { mapHighlightRow, SPORT_CATEGORIES, type Highlight } from "@/lib/sportflix-data";
 import { HighlightCard } from "@/components/sportflix/HighlightCard";
+import { supabase } from "@/integrations/supabase/client";
+
+const db = supabase as any;
 
 export const Route = createFileRoute("/sports")({
   head: () => ({
     meta: [
       { title: "Sports Highlights — SPORTFLIX" },
-      { name: "description", content: "Watch and download highlights from Football, Basketball, Volleyball, World Cup, Champions League, AFCON, and Rwanda League." },
-      { property: "og:title", content: "Sports Highlights — SPORTFLIX" },
-      { property: "og:description", content: "Football, Basketball, AFCON, Champions League, Rwanda League highlights." },
+      { name: "description", content: "Watch and download highlights from all matches." },
     ],
   }),
   component: SportsPage,
@@ -17,9 +18,22 @@ export const Route = createFileRoute("/sports")({
 
 function SportsPage() {
   const [cat, setCat] = useState<string>("All");
+  const [items, setItems] = useState<Highlight[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    db.from("highlights")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .then(({ data }: { data: any[] | null }) => {
+        setItems((data ?? []).map(mapHighlightRow));
+        setLoading(false);
+      });
+  }, []);
+
   const list = useMemo(
-    () => (cat === "All" ? HIGHLIGHTS : HIGHLIGHTS.filter((h) => h.category === cat)),
-    [cat]
+    () => (cat === "All" ? items : items.filter((h) => h.category === cat)),
+    [cat, items]
   );
 
   return (
@@ -29,14 +43,14 @@ function SportsPage() {
           <div className="flex items-center gap-2">
             <span className="size-2 animate-pulse-live rounded-full bg-accent" />
             <span className="font-mono text-xs font-bold uppercase tracking-[0.25em] text-accent">
-              Live Arena
+              Highlights Arena
             </span>
           </div>
           <h1 className="font-display text-5xl font-black italic tracking-tighter md:text-6xl">
             SPORTS HIGHLIGHTS
           </h1>
           <p className="max-w-2xl text-muted-foreground">
-            The biggest moments from the world's biggest leagues. No live matches — pure highlights, downloadable.
+            All matches highlights — uploaded by the SPORTFLIX team. No live matches; pure highlights, downloadable.
           </p>
         </header>
 
@@ -56,11 +70,19 @@ function SportsPage() {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 gap-6 pb-20 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {list.map((h) => (
-            <HighlightCard key={h.id} h={h} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid place-items-center py-24 text-muted-foreground">Loading…</div>
+        ) : list.length === 0 ? (
+          <div className="grid place-items-center py-24 text-muted-foreground">
+            {items.length === 0 ? "No highlights uploaded yet." : "Nothing in this category."}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 pb-20 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {list.map((h) => (
+              <HighlightCard key={h.id} h={h} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      downloads: {
+        Row: {
+          completed_at: string | null
+          content_id: string
+          content_type: string
+          created_at: string
+          id: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          content_id: string
+          content_type: string
+          created_at?: string
+          id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       highlights: {
         Row: {
           category: string | null
@@ -61,6 +91,7 @@ export type Database = {
           language: string | null
           poster_url: string
           rating: number | null
+          thumbnail_url: string | null
           title: string
           translator: string | null
           video_url: string | null
@@ -79,6 +110,7 @@ export type Database = {
           language?: string | null
           poster_url: string
           rating?: number | null
+          thumbnail_url?: string | null
           title: string
           translator?: string | null
           video_url?: string | null
@@ -97,6 +129,7 @@ export type Database = {
           language?: string | null
           poster_url?: string
           rating?: number | null
+          thumbnail_url?: string | null
           title?: string
           translator?: string | null
           video_url?: string | null
@@ -139,6 +172,54 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      views: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      watchlist: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          id?: string
           user_id?: string
         }
         Relationships: []

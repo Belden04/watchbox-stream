@@ -16,7 +16,7 @@ import { Footer } from "../components/sportflix/Footer";
 import { Splash } from "../components/sportflix/Splash";
 import { AuthProvider } from "../lib/auth";
 import { Toaster } from "sonner";
-import logoAsset from "../assets/sportflix-logo.png.asset.json";
+import { SF_FAVICON } from "../lib/sf-favicon";
 
 
 function NotFoundComponent() {
@@ -83,23 +83,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#0d0d0d" },
-      { title: "SPORTFLIX — Premium Movies & Sports Highlights" },
+      { title: "SPORTFLIX | The home of translated & non-translated & all matches highlights" },
       {
         name: "description",
         content:
-          "Stream and download premium movies (translated & non-translated) and world-class sports highlights — Football, Basketball, AFCON, Champions League, Rwanda League, World Cup. Watch as a guest, upgrade for 4K.",
+          "SPORTFLIX — the home of translated & non-translated movies and all matches highlights. Watch and download as a guest.",
       },
       { name: "author", content: "Belden Right" },
-      { property: "og:title", content: "SPORTFLIX — Premium Movies & Sports Highlights" },
-      { property: "og:description", content: "Stream and download premium movies and sports highlights. Watch as a guest." },
+      { property: "og:title", content: "SPORTFLIX | The home of translated & non-translated & all matches highlights" },
+      { property: "og:description", content: "Translated & non-translated movies and all matches highlights." },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "SPORTFLIX" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/png", href: logoAsset.url },
-      { rel: "apple-touch-icon", href: logoAsset.url },
+      { rel: "icon", type: "image/svg+xml", href: SF_FAVICON },
+      { rel: "apple-touch-icon", href: SF_FAVICON },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

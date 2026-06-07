@@ -1,16 +1,20 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Youtube, Send } from "lucide-react";
+import { SFMark } from "./SFMark";
 
 export function Footer() {
   return (
     <footer className="border-t border-border bg-surface/50 pt-20 pb-10">
       <div className="mx-auto grid max-w-[1600px] grid-cols-1 gap-12 px-4 md:grid-cols-4 md:px-8">
         <div className="space-y-5">
-          <Link to="/" className="font-display text-3xl font-extrabold tracking-tighter text-primary">
-            PORT<span className="text-foreground">FLIX</span>
+          <Link to="/" className="flex items-center gap-3">
+            <SFMark size={40} />
+            <span className="font-display text-2xl font-extrabold tracking-tighter">
+              SPORT<span className="text-primary">FLIX</span>
+            </span>
           </Link>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            The premium home for high-octane cinema and world-class sports highlights. Your arena, your screen.
+            The home of translated &amp; non-translated movies and all matches highlights.
           </p>
           <div className="flex gap-3">
             {[Facebook, Instagram, Youtube, Send].map((Icon, i) => (
@@ -39,10 +43,10 @@ export function Footer() {
           <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-foreground">Company</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li><Link to="/about" className="hover:text-primary">About</Link></li>
+            <li><Link to="/bio" className="hover:text-primary">Bio</Link></li>
             <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
             <li><a href="#" className="hover:text-primary">Privacy Policy</a></li>
             <li><a href="#" className="hover:text-primary">Terms of Service</a></li>
-            <li><a href="#" className="hover:text-primary">FAQ</a></li>
           </ul>
         </div>
 

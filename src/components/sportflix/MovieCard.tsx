@@ -1,21 +1,39 @@
-import { Play, Download, Plus } from "lucide-react";
+import { Play, Download, Plus, Check } from "lucide-react";
 import { useState } from "react";
 import type { Movie } from "@/lib/sportflix-data";
 import { WatchDialog } from "./WatchDialog";
+import { addToWatchlist, removeFromWatchlist } from "@/lib/watchlist";
 
 type Props = {
   movie: Movie;
   progress?: number;
+  inWatchlist?: boolean;
+  onWatchlistChange?: () => void;
 };
 
-export function MovieCard({ movie, progress }: Props) {
+export function MovieCard({ movie, progress, inWatchlist, onWatchlistChange }: Props) {
   const [open, setOpen] = useState(false);
+  const [saved, setSaved] = useState(!!inWatchlist);
+
+  const toggleSave = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (saved) {
+      const ok = await removeFromWatchlist("movie", movie.id);
+      if (ok) { setSaved(false); onWatchlistChange?.(); }
+    } else {
+      const ok = await addToWatchlist("movie", movie.id);
+      if (ok) { setSaved(true); onWatchlistChange?.(); }
+    }
+  };
+
+  const img = movie.thumbnail || movie.poster;
+
   return (
     <>
       <div className="group w-[180px] shrink-0 cursor-pointer space-y-3 md:w-[200px]" onClick={() => setOpen(true)}>
         <div className="relative aspect-[2/3] overflow-hidden rounded-lg border border-border bg-surface-2 transition-all duration-300 group-hover:border-primary/60 group-hover:shadow-[0_0_30px_-5px_var(--color-primary)]">
           <img
-            src={movie.poster}
+            src={img}
             alt={movie.title}
             loading="lazy"
             className="size-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -26,7 +44,7 @@ export function MovieCard({ movie, progress }: Props) {
           </div>
           {movie.is_translated && (
             <div className="absolute left-2 top-2 rounded bg-accent px-1.5 py-0.5 font-mono text-[10px] font-bold text-accent-foreground">
-              Translated
+              Umusobanuwe
             </div>
           )}
           <div className="absolute bottom-2 left-2 right-2 flex translate-y-2 gap-1 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
@@ -36,23 +54,13 @@ export function MovieCard({ movie, progress }: Props) {
             >
               <Play className="size-3 fill-current" /> WATCH
             </button>
-            {movie.video_url && (
-              <a
-                href={movie.video_url}
-                download
-                onClick={(e) => e.stopPropagation()}
-                className="grid size-7 place-items-center rounded bg-foreground text-background hover:bg-accent"
-                aria-label="Download"
-              >
-                <Download className="size-3" />
-              </a>
-            )}
             <button
-              onClick={(e) => e.stopPropagation()}
-              className="grid size-7 place-items-center rounded border border-border bg-surface-2 hover:border-primary"
-              aria-label="Add to watchlist"
+              onClick={toggleSave}
+              className={`grid size-7 place-items-center rounded border border-border ${saved ? "bg-primary text-primary-foreground" : "bg-surface-2 hover:border-primary"}`}
+              aria-label={saved ? "Remove from watchlist" : "Add to watchlist"}
+              title={saved ? "Remove from watchlist" : "Add to watchlist"}
             >
-              <Plus className="size-3" />
+              {saved ? <Check className="size-3" /> : <Plus className="size-3" />}
             </button>
           </div>
           {progress !== undefined && (
@@ -66,11 +74,19 @@ export function MovieCard({ movie, progress }: Props) {
             {movie.title}
           </h3>
           <p className="text-[11px] text-muted-foreground">
-            {movie.genre} · {movie.year} · ⭐ {movie.rating}
+            {movie.genre} · {movie.year} {movie.translator ? `· Umusobanuzi: ${movie.translator}` : ""}
           </p>
         </div>
       </div>
-      <WatchDialog open={open} onClose={() => setOpen(false)} title={movie.title} videoUrl={movie.video_url} poster={movie.poster} />
+      <WatchDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title={movie.title}
+        videoUrl={movie.video_url}
+        poster={img}
+        contentType="movie"
+        contentId={movie.id}
+      />
     </>
   );
 }

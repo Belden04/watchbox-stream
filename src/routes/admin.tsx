@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Trash2, Upload, Star, Crown } from "lucide-react";
+import { Trash2, Upload, Star, Crown, BarChart3, Download as DownloadIcon, Eye } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 const db = supabase as any;
 import { useAuth } from "@/lib/auth";
@@ -15,6 +15,7 @@ type Movie = {
   id: string;
   title: string;
   poster_url: string;
+  thumbnail_url: string | null;
   video_url: string | null;
   year: number;
   genre: string;
@@ -22,6 +23,7 @@ type Movie = {
   is_translated: boolean;
   is_trending: boolean;
   director: string;
+  translator: string | null;
 };
 type Highlight = {
   id: string;
@@ -36,14 +38,18 @@ function AdminPage() {
   const { user, isAdmin, loading, refreshRole } = useAuth();
   const [movies, setMovies] = useState<Movie[]>([]);
   const [highlights, setHighlights] = useState<Highlight[]>([]);
+  const [stats, setStats] = useState({ downloads: 0, views: 0 });
 
   const load = async () => {
-    const [m, h] = await Promise.all([
+    const [m, h, d, v] = await Promise.all([
       db.from("movies").select("*").order("created_at", { ascending: false }),
       db.from("highlights").select("*").order("created_at", { ascending: false }),
+      db.from("downloads").select("id", { count: "exact", head: true }),
+      db.from("views").select("id", { count: "exact", head: true }),
     ]);
     setMovies((m.data as Movie[]) ?? []);
     setHighlights((h.data as Highlight[]) ?? []);
+    setStats({ downloads: d.count ?? 0, views: v.count ?? 0 });
   };
 
   useEffect(() => {
@@ -97,7 +103,7 @@ function AdminPage() {
   return (
     <div className="pt-24">
       <div className="mx-auto max-w-[1400px] space-y-12 px-4 pb-20 md:px-8">
-        <header className="flex items-center justify-between">
+        <header className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="font-display text-4xl font-black tracking-tighter">Admin Console</h1>
             <p className="text-sm text-muted-foreground">Upload, trend, and curate the SPORTFLIX library.</p>
@@ -107,12 +113,29 @@ function AdminPage() {
           </span>
         </header>
 
+        <div className="grid gap-4 sm:grid-cols-3">
+          <StatCard icon={<BarChart3 className="size-5" />} label="Movies" value={movies.length} />
+          <StatCard icon={<Eye className="size-5" />} label="Total views" value={stats.views} />
+          <StatCard icon={<DownloadIcon className="size-5" />} label="Total downloads" value={stats.downloads} />
+        </div>
+
         <UploadMovieForm onDone={load} />
         <MovieList movies={movies} reload={load} />
 
         <UploadHighlightForm onDone={load} />
         <HighlightList highlights={highlights} reload={load} />
       </div>
+    </div>
+  );
+}
+
+function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
+  return (
+    <div className="rounded-xl border border-border bg-surface p-5">
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+        {icon} {label}
+      </div>
+      <p className="mt-2 font-display text-3xl font-black tracking-tighter">{value}</p>
     </div>
   );
 }
@@ -128,6 +151,7 @@ async function uploadTo(bucket: string, file: File) {
 function UploadMovieForm({ onDone }: { onDone: () => void }) {
   const [busy, setBusy] = useState(false);
   const [poster, setPoster] = useState<File | null>(null);
+  const [thumb, setThumb] = useState<File | null>(null);
   const [video, setVideo] = useState<File | null>(null);
   const [form, setForm] = useState({
     title: "",
@@ -150,13 +174,17 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
     setBusy(true);
     try {
       const poster_url = await uploadTo("posters", poster);
+      const thumbnail_url = thumb ? await uploadTo("thumbnails", thumb) : null;
       const video_url = video ? await uploadTo("videos", video) : null;
-      const { error } = await db.from("movies").insert({ ...form, poster_url, video_url });
+      const payload = { ...form, poster_url, thumbnail_url, video_url };
+      if (!form.is_translated) payload.translator = "";
+      const { error } = await db.from("movies").insert(payload);
       if (error) throw error;
-      toast.success("Movie uploaded");
+      toast.success("Movie published");
       setPoster(null);
+      setThumb(null);
       setVideo(null);
-      setForm({ ...form, title: "", description: "" });
+      setForm({ ...form, title: "", description: "", translator: "" });
       onDone();
     } catch (err) {
       toast.error((err as Error).message);
@@ -177,25 +205,39 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
         <input placeholder="Genre" value={form.genre} onChange={(e) => setForm({ ...form, genre: e.target.value })} className="input" />
         <input placeholder="Language (EN, KIN, EN/KIN...)" value={form.language} onChange={(e) => setForm({ ...form, language: e.target.value })} className="input" />
         <input placeholder="Country" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="input" />
-        <input placeholder="Translator (Umusobanuzi)" value={form.translator} onChange={(e) => setForm({ ...form, translator: e.target.value })} className="input" />
         <input placeholder="Duration (e.g. 1h 48m)" value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} className="input" />
         <input type="number" placeholder="Year" value={form.year} onChange={(e) => setForm({ ...form, year: +e.target.value })} className="input" />
         <input type="number" step="0.1" placeholder="Rating" value={form.rating} onChange={(e) => setForm({ ...form, rating: +e.target.value })} className="input" />
         <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="input md:col-span-2" rows={3} />
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={form.is_translated} onChange={(e) => setForm({ ...form, is_translated: e.target.checked })} />
+
+        <label className="flex items-center gap-2 text-sm md:col-span-2">
+          <input type="checkbox" checked={form.is_translated} onChange={(e) => setForm({ ...form, is_translated: e.target.checked, translator: e.target.checked ? form.translator : "" })} />
           Translated (Umusobanuwe)
         </label>
-        <label className="flex items-center gap-2 text-sm">
+        {form.is_translated && (
+          <input
+            required
+            placeholder="Umusobanuzi (Translator name)"
+            value={form.translator}
+            onChange={(e) => setForm({ ...form, translator: e.target.value })}
+            className="input md:col-span-2 border-primary/50 ring-1 ring-primary/30"
+          />
+        )}
+        <label className="flex items-center gap-2 text-sm md:col-span-2">
           <input type="checkbox" checked={form.is_trending} onChange={(e) => setForm({ ...form, is_trending: e.target.checked })} />
           Add to Trending playlist
         </label>
+
         <label className="text-xs text-muted-foreground">
-          Poster image *
+          Poster image (vertical, 2:3) *
           <input required type="file" accept="image/*" onChange={(e) => setPoster(e.target.files?.[0] ?? null)} className="mt-1 block w-full text-foreground" />
         </label>
         <label className="text-xs text-muted-foreground">
-          Video file (mp4) — optional
+          Thumbnail / banner image (16:9) — optional
+          <input type="file" accept="image/*" onChange={(e) => setThumb(e.target.files?.[0] ?? null)} className="mt-1 block w-full text-foreground" />
+        </label>
+        <label className="text-xs text-muted-foreground md:col-span-2">
+          Video file (mp4) — from your PC
           <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} className="mt-1 block w-full text-foreground" />
         </label>
         <button disabled={busy} className="rounded-md bg-primary py-3 font-bold text-primary-foreground hover:scale-[1.01] disabled:opacity-50 md:col-span-2">
@@ -229,11 +271,11 @@ function MovieList({ movies, reload }: { movies: Movie[]; reload: () => void }) 
         <div className="grid gap-3">
           {movies.map((m) => (
             <div key={m.id} className="flex items-center gap-4 rounded-lg border border-border bg-surface p-3">
-              <img src={m.poster_url} alt={m.title} className="h-20 w-14 rounded object-cover" />
+              <img src={m.thumbnail_url || m.poster_url} alt={m.title} className="h-20 w-14 rounded object-cover" />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-bold">{m.title}</p>
                 <p className="text-xs text-muted-foreground">
-                  {m.year} · {m.genre} · {m.language} · {m.is_translated ? "Translated" : "Non-translated"}
+                  {m.year} · {m.genre} · {m.language} · {m.is_translated ? `Umusobanuwe${m.translator ? ` — ${m.translator}` : ""}` : "Non-translated"}
                   {m.is_trending && <span className="ml-2 rounded bg-primary px-1.5 py-0.5 text-[10px] text-primary-foreground">TRENDING</span>}
                 </p>
               </div>
@@ -266,7 +308,7 @@ function UploadHighlightForm({ onDone }: { onDone: () => void }) {
       const video_url = video ? await uploadTo("videos", video) : null;
       const { error } = await db.from("highlights").insert({ ...form, thumbnail_url, video_url });
       if (error) throw error;
-      toast.success("Highlight uploaded");
+      toast.success("Highlight published");
       setThumb(null);
       setVideo(null);
       setForm({ ...form, title: "", description: "" });
@@ -298,7 +340,7 @@ function UploadHighlightForm({ onDone }: { onDone: () => void }) {
           <input required type="file" accept="image/*" onChange={(e) => setThumb(e.target.files?.[0] ?? null)} className="mt-1 block w-full" />
         </label>
         <label className="text-xs text-muted-foreground">
-          Video file — optional
+          Video file — from your PC
           <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} className="mt-1 block w-full" />
         </label>
         <button disabled={busy} className="rounded-md bg-accent py-3 font-bold text-accent-foreground hover:scale-[1.01] disabled:opacity-50 md:col-span-2">

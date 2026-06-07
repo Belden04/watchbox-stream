@@ -1,10 +1,24 @@
-import { Play, Download, Bookmark } from "lucide-react";
+import { Play, Bookmark, Check } from "lucide-react";
 import { useState } from "react";
 import type { Highlight } from "@/lib/sportflix-data";
 import { WatchDialog } from "./WatchDialog";
+import { addToWatchlist, removeFromWatchlist } from "@/lib/watchlist";
 
-export function HighlightCard({ h }: { h: Highlight & { video_url?: string | null } }) {
+export function HighlightCard({ h, inWatchlist, onWatchlistChange }: { h: Highlight; inWatchlist?: boolean; onWatchlistChange?: () => void }) {
   const [open, setOpen] = useState(false);
+  const [saved, setSaved] = useState(!!inWatchlist);
+
+  const toggleSave = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (saved) {
+      const ok = await removeFromWatchlist("highlight", h.id);
+      if (ok) { setSaved(false); onWatchlistChange?.(); }
+    } else {
+      const ok = await addToWatchlist("highlight", h.id);
+      if (ok) { setSaved(true); onWatchlistChange?.(); }
+    }
+  };
+
   return (
     <>
       <div className="group cursor-pointer" onClick={() => setOpen(true)}>
@@ -19,9 +33,11 @@ export function HighlightCard({ h }: { h: Highlight & { video_url?: string | nul
           <div className="absolute left-3 top-3 rounded bg-accent px-2 py-0.5 font-mono text-[10px] font-black uppercase italic text-accent-foreground">
             {h.category}
           </div>
-          <div className="absolute right-3 top-3 rounded bg-black/70 px-1.5 py-0.5 font-mono text-[10px] font-bold backdrop-blur-sm">
-            {h.duration}
-          </div>
+          {h.duration && (
+            <div className="absolute right-3 top-3 rounded bg-black/70 px-1.5 py-0.5 font-mono text-[10px] font-bold backdrop-blur-sm">
+              {h.duration}
+            </div>
+          )}
           <div className="absolute inset-0 grid place-items-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <div className="grid size-16 place-items-center rounded-full bg-accent shadow-[var(--shadow-glow-accent)]">
               <Play className="size-6 fill-accent-foreground text-accent-foreground" />
@@ -31,27 +47,26 @@ export function HighlightCard({ h }: { h: Highlight & { video_url?: string | nul
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h3 className="truncate text-sm font-bold transition-colors group-hover:text-accent">{h.title}</h3>
-            <p className="text-[11px] text-muted-foreground">{(h.views / 1000).toFixed(0)}K views</p>
+            <p className="text-[11px] text-muted-foreground">{h.views ? `${(h.views / 1000).toFixed(0)}K views` : "New"}</p>
           </div>
-          <div className="flex shrink-0 gap-1">
-            {h.video_url && (
-              <a
-                href={h.video_url}
-                download
-                onClick={(e) => e.stopPropagation()}
-                className="grid size-7 place-items-center rounded bg-surface-2 hover:bg-accent hover:text-accent-foreground"
-                aria-label="Download"
-              >
-                <Download className="size-3" />
-              </a>
-            )}
-            <button onClick={(e) => e.stopPropagation()} className="grid size-7 place-items-center rounded bg-surface-2 hover:bg-accent hover:text-accent-foreground" aria-label="Save">
-              <Bookmark className="size-3" />
-            </button>
-          </div>
+          <button
+            onClick={toggleSave}
+            className={`grid size-7 shrink-0 place-items-center rounded ${saved ? "bg-accent text-accent-foreground" : "bg-surface-2 hover:bg-accent hover:text-accent-foreground"}`}
+            aria-label={saved ? "Remove from watchlist" : "Save"}
+          >
+            {saved ? <Check className="size-3" /> : <Bookmark className="size-3" />}
+          </button>
         </div>
       </div>
-      <WatchDialog open={open} onClose={() => setOpen(false)} title={h.title} videoUrl={h.video_url} poster={h.thumbnail} />
+      <WatchDialog
+        open={open}
+        onClose={() => setOpen(false)}
+        title={h.title}
+        videoUrl={h.video_url}
+        poster={h.thumbnail}
+        contentType="highlight"
+        contentId={h.id}
+      />
     </>
   );
 }

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import logo from "@/assets/sportflix-logo.png.asset.json";
+import { SFMark } from "@/components/sportflix/SFMark";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -55,7 +55,7 @@ function LoginPage() {
     <div className="grid min-h-screen place-items-center px-4 pt-24">
       <div className="w-full max-w-md space-y-6 rounded-2xl border border-border bg-surface p-8">
         <div className="flex flex-col items-center gap-3">
-          <img src={logo.url} alt="SPORTFLIX" className="h-12 w-auto" />
+          <SFMark size={56} />
           <h1 className="font-display text-3xl font-black">
             {mode === "signin" ? "Welcome back" : "Join SPORTFLIX"}
           </h1>

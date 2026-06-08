@@ -143,25 +143,37 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
                 ))}
               </select>
               {videoUrl && (
-                <button
-                  onClick={handleDownload}
-                  disabled={downloading}
-                  className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:scale-105 disabled:opacity-70"
-                >
-                  {downloading ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin" /> {progress}%
-                    </>
-                  ) : downloaded ? (
-                    <>
-                      <Check className="size-4" /> Downloaded
-                    </>
-                  ) : (
-                    <>
-                      <Download className="size-4" /> Download
-                    </>
-                  )}
-                </button>
+                <>
+                  <button
+                    onClick={handleDownload}
+                    disabled={downloading}
+                    className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:scale-105 disabled:opacity-70"
+                  >
+                    {downloading ? (
+                      <>
+                        <Loader2 className="size-4 animate-spin" /> {progress}%
+                      </>
+                    ) : downloaded ? (
+                      <>
+                        <Check className="size-4" /> Downloaded
+                      </>
+                    ) : (
+                      <>
+                        <Download className="size-4" /> Download
+                      </>
+                    )}
+                  </button>
+                  <a
+                    href={videoUrl}
+                    download={`${title.replace(/[^\w.-]+/g, "_")}.mp4`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Open direct link — works with browser download extensions (IDM, ADM, etc.)"
+                    className="inline-flex items-center gap-2 rounded-md border border-border bg-surface-2 px-3 py-2 text-xs font-bold uppercase tracking-widest hover:border-primary hover:text-primary"
+                  >
+                    Direct link
+                  </a>
+                </>
               )}
             </div>
           </div>

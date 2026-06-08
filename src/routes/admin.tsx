@@ -176,8 +176,23 @@ async function uploadTo(
   return s.signedUrl;
 }
 
+function ProgressBar({ value, label }: { value: number; label: string }) {
+  if (value <= 0) return null;
+  return (
+    <div className="md:col-span-2">
+      <div className="mb-1 flex justify-between text-xs text-muted-foreground">
+        <span>{label}</span><span>{value}%</span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-surface-2">
+        <div className="h-full bg-primary transition-[width] duration-150" style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  );
+}
+
 function UploadMovieForm({ onDone }: { onDone: () => void }) {
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState({ label: "", pct: 0 });
   const [poster, setPoster] = useState<File | null>(null);
   const [thumb, setThumb] = useState<File | null>(null);
   const [video, setVideo] = useState<File | null>(null);
@@ -201,9 +216,18 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
     if (!poster) return toast.error("Poster required");
     setBusy(true);
     try {
-      const poster_url = await uploadTo("posters", poster);
-      const thumbnail_url = thumb ? await uploadTo("thumbnails", thumb) : null;
-      const video_url = video ? await uploadTo("videos", video) : null;
+      setProgress({ label: "Uploading poster…", pct: 0 });
+      const poster_url = await uploadTo("posters", poster, (p) => setProgress({ label: "Uploading poster…", pct: p }));
+      let thumbnail_url: string | null = null;
+      if (thumb) {
+        setProgress({ label: "Uploading thumbnail…", pct: 0 });
+        thumbnail_url = await uploadTo("thumbnails", thumb, (p) => setProgress({ label: "Uploading thumbnail…", pct: p }));
+      }
+      let video_url: string | null = null;
+      if (video) {
+        setProgress({ label: "Uploading video…", pct: 0 });
+        video_url = await uploadTo("videos", video, (p) => setProgress({ label: "Uploading video…", pct: p }));
+      }
       const payload = { ...form, poster_url, thumbnail_url, video_url };
       if (!form.is_translated) payload.translator = "";
       const { error } = await db.from("movies").insert(payload);
@@ -218,6 +242,7 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
       toast.error((err as Error).message);
     } finally {
       setBusy(false);
+      setProgress({ label: "", pct: 0 });
     }
   };
 

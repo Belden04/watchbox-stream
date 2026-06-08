@@ -293,8 +293,9 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
           Video file (mp4) — from your PC
           <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} className="mt-1 block w-full text-foreground" />
         </label>
+        <ProgressBar value={progress.pct} label={progress.label} />
         <button disabled={busy} className="rounded-md bg-primary py-3 font-bold text-primary-foreground hover:scale-[1.01] disabled:opacity-50 md:col-span-2">
-          {busy ? "Uploading…" : "Publish movie"}
+          {busy ? progress.label || "Uploading…" : "Publish movie"}
         </button>
       </form>
     </section>

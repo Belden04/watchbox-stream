@@ -140,12 +140,40 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 }
 
-async function uploadTo(bucket: string, file: File) {
-  const path = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  const { error } = await supabase.storage.from(bucket).upload(path, file);
-  if (error) throw error;
-  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-  return data.publicUrl;
+// Long-lived signed URL (10 years) — buckets are private, so getPublicUrl 404s.
+const SIGNED_TTL = 60 * 60 * 24 * 365 * 10;
+
+async function uploadTo(
+  bucket: string,
+  file: File,
+  onProgress?: (pct: number) => void,
+): Promise<string> {
+  const path = `${Date.now()}-${file.name.replace(/[^\w.-]+/g, "-")}`;
+  // Use a signed XHR PUT to Supabase storage so we can report progress.
+  // Fall back to the SDK if the signed-upload endpoint is unavailable.
+  const { data: signed, error: signErr } = await supabase.storage
+    .from(bucket)
+    .createSignedUploadUrl(path);
+  if (signErr || !signed) {
+    const { error } = await supabase.storage.from(bucket).upload(path, file);
+    if (error) throw error;
+  } else {
+    await new Promise<void>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("PUT", signed.signedUrl, true);
+      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+      xhr.upload.onprogress = (ev) => {
+        if (ev.lengthComputable && onProgress) onProgress(Math.round((ev.loaded / ev.total) * 100));
+      };
+      xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error(`Upload failed (${xhr.status})`)));
+      xhr.onerror = () => reject(new Error("Network error during upload"));
+      xhr.send(file);
+    });
+  }
+  const { data: s, error: sErr } = await supabase.storage.from(bucket).createSignedUrl(path, SIGNED_TTL);
+  if (sErr || !s) throw sErr ?? new Error("Could not create signed URL");
+  onProgress?.(100);
+  return s.signedUrl;
 }
 
 function UploadMovieForm({ onDone }: { onDone: () => void }) {

@@ -140,16 +140,59 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 }
 
-async function uploadTo(bucket: string, file: File) {
-  const path = `${Date.now()}-${file.name.replace(/\s+/g, "-")}`;
-  const { error } = await supabase.storage.from(bucket).upload(path, file);
-  if (error) throw error;
-  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-  return data.publicUrl;
+// Long-lived signed URL (10 years) — buckets are private, so getPublicUrl 404s.
+const SIGNED_TTL = 60 * 60 * 24 * 365 * 10;
+
+async function uploadTo(
+  bucket: string,
+  file: File,
+  onProgress?: (pct: number) => void,
+): Promise<string> {
+  const path = `${Date.now()}-${file.name.replace(/[^\w.-]+/g, "-")}`;
+  // Use a signed XHR PUT to Supabase storage so we can report progress.
+  // Fall back to the SDK if the signed-upload endpoint is unavailable.
+  const { data: signed, error: signErr } = await supabase.storage
+    .from(bucket)
+    .createSignedUploadUrl(path);
+  if (signErr || !signed) {
+    const { error } = await supabase.storage.from(bucket).upload(path, file);
+    if (error) throw error;
+  } else {
+    await new Promise<void>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open("PUT", signed.signedUrl, true);
+      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
+      xhr.upload.onprogress = (ev) => {
+        if (ev.lengthComputable && onProgress) onProgress(Math.round((ev.loaded / ev.total) * 100));
+      };
+      xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error(`Upload failed (${xhr.status})`)));
+      xhr.onerror = () => reject(new Error("Network error during upload"));
+      xhr.send(file);
+    });
+  }
+  const { data: s, error: sErr } = await supabase.storage.from(bucket).createSignedUrl(path, SIGNED_TTL);
+  if (sErr || !s) throw sErr ?? new Error("Could not create signed URL");
+  onProgress?.(100);
+  return s.signedUrl;
+}
+
+function ProgressBar({ value, label }: { value: number; label: string }) {
+  if (value <= 0) return null;
+  return (
+    <div className="md:col-span-2">
+      <div className="mb-1 flex justify-between text-xs text-muted-foreground">
+        <span>{label}</span><span>{value}%</span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-surface-2">
+        <div className="h-full bg-primary transition-[width] duration-150" style={{ width: `${value}%` }} />
+      </div>
+    </div>
+  );
 }
 
 function UploadMovieForm({ onDone }: { onDone: () => void }) {
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState({ label: "", pct: 0 });
   const [poster, setPoster] = useState<File | null>(null);
   const [thumb, setThumb] = useState<File | null>(null);
   const [video, setVideo] = useState<File | null>(null);
@@ -173,9 +216,18 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
     if (!poster) return toast.error("Poster required");
     setBusy(true);
     try {
-      const poster_url = await uploadTo("posters", poster);
-      const thumbnail_url = thumb ? await uploadTo("thumbnails", thumb) : null;
-      const video_url = video ? await uploadTo("videos", video) : null;
+      setProgress({ label: "Uploading poster…", pct: 0 });
+      const poster_url = await uploadTo("posters", poster, (p) => setProgress({ label: "Uploading poster…", pct: p }));
+      let thumbnail_url: string | null = null;
+      if (thumb) {
+        setProgress({ label: "Uploading thumbnail…", pct: 0 });
+        thumbnail_url = await uploadTo("thumbnails", thumb, (p) => setProgress({ label: "Uploading thumbnail…", pct: p }));
+      }
+      let video_url: string | null = null;
+      if (video) {
+        setProgress({ label: "Uploading video…", pct: 0 });
+        video_url = await uploadTo("videos", video, (p) => setProgress({ label: "Uploading video…", pct: p }));
+      }
       const payload = { ...form, poster_url, thumbnail_url, video_url };
       if (!form.is_translated) payload.translator = "";
       const { error } = await db.from("movies").insert(payload);
@@ -190,6 +242,7 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
       toast.error((err as Error).message);
     } finally {
       setBusy(false);
+      setProgress({ label: "", pct: 0 });
     }
   };
 
@@ -240,8 +293,9 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
           Video file (mp4) — from your PC
           <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} className="mt-1 block w-full text-foreground" />
         </label>
+        <ProgressBar value={progress.pct} label={progress.label} />
         <button disabled={busy} className="rounded-md bg-primary py-3 font-bold text-primary-foreground hover:scale-[1.01] disabled:opacity-50 md:col-span-2">
-          {busy ? "Uploading…" : "Publish movie"}
+          {busy ? progress.label || "Uploading…" : "Publish movie"}
         </button>
       </form>
     </section>
@@ -295,6 +349,7 @@ function MovieList({ movies, reload }: { movies: Movie[]; reload: () => void }) 
 
 function UploadHighlightForm({ onDone }: { onDone: () => void }) {
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState({ label: "", pct: 0 });
   const [thumb, setThumb] = useState<File | null>(null);
   const [video, setVideo] = useState<File | null>(null);
   const [form, setForm] = useState({ title: "", category: "Football", duration: "", description: "" });
@@ -304,8 +359,13 @@ function UploadHighlightForm({ onDone }: { onDone: () => void }) {
     if (!thumb) return toast.error("Thumbnail required");
     setBusy(true);
     try {
-      const thumbnail_url = await uploadTo("thumbnails", thumb);
-      const video_url = video ? await uploadTo("videos", video) : null;
+      setProgress({ label: "Uploading thumbnail…", pct: 0 });
+      const thumbnail_url = await uploadTo("thumbnails", thumb, (p) => setProgress({ label: "Uploading thumbnail…", pct: p }));
+      let video_url: string | null = null;
+      if (video) {
+        setProgress({ label: "Uploading video…", pct: 0 });
+        video_url = await uploadTo("videos", video, (p) => setProgress({ label: "Uploading video…", pct: p }));
+      }
       const { error } = await db.from("highlights").insert({ ...form, thumbnail_url, video_url });
       if (error) throw error;
       toast.success("Highlight published");
@@ -317,6 +377,7 @@ function UploadHighlightForm({ onDone }: { onDone: () => void }) {
       toast.error((err as Error).message);
     } finally {
       setBusy(false);
+      setProgress({ label: "", pct: 0 });
     }
   };
 
@@ -343,8 +404,9 @@ function UploadHighlightForm({ onDone }: { onDone: () => void }) {
           Video file — from your PC
           <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} className="mt-1 block w-full" />
         </label>
+        <ProgressBar value={progress.pct} label={progress.label} />
         <button disabled={busy} className="rounded-md bg-accent py-3 font-bold text-accent-foreground hover:scale-[1.01] disabled:opacity-50 md:col-span-2">
-          {busy ? "Uploading…" : "Publish highlight"}
+          {busy ? progress.label || "Uploading…" : "Publish highlight"}
         </button>
       </form>
     </section>

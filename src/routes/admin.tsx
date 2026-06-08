@@ -349,6 +349,7 @@ function MovieList({ movies, reload }: { movies: Movie[]; reload: () => void }) 
 
 function UploadHighlightForm({ onDone }: { onDone: () => void }) {
   const [busy, setBusy] = useState(false);
+  const [progress, setProgress] = useState({ label: "", pct: 0 });
   const [thumb, setThumb] = useState<File | null>(null);
   const [video, setVideo] = useState<File | null>(null);
   const [form, setForm] = useState({ title: "", category: "Football", duration: "", description: "" });
@@ -358,8 +359,13 @@ function UploadHighlightForm({ onDone }: { onDone: () => void }) {
     if (!thumb) return toast.error("Thumbnail required");
     setBusy(true);
     try {
-      const thumbnail_url = await uploadTo("thumbnails", thumb);
-      const video_url = video ? await uploadTo("videos", video) : null;
+      setProgress({ label: "Uploading thumbnail…", pct: 0 });
+      const thumbnail_url = await uploadTo("thumbnails", thumb, (p) => setProgress({ label: "Uploading thumbnail…", pct: p }));
+      let video_url: string | null = null;
+      if (video) {
+        setProgress({ label: "Uploading video…", pct: 0 });
+        video_url = await uploadTo("videos", video, (p) => setProgress({ label: "Uploading video…", pct: p }));
+      }
       const { error } = await db.from("highlights").insert({ ...form, thumbnail_url, video_url });
       if (error) throw error;
       toast.success("Highlight published");
@@ -371,6 +377,7 @@ function UploadHighlightForm({ onDone }: { onDone: () => void }) {
       toast.error((err as Error).message);
     } finally {
       setBusy(false);
+      setProgress({ label: "", pct: 0 });
     }
   };
 
@@ -397,8 +404,9 @@ function UploadHighlightForm({ onDone }: { onDone: () => void }) {
           Video file — from your PC
           <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} className="mt-1 block w-full" />
         </label>
+        <ProgressBar value={progress.pct} label={progress.label} />
         <button disabled={busy} className="rounded-md bg-accent py-3 font-bold text-accent-foreground hover:scale-[1.01] disabled:opacity-50 md:col-span-2">
-          {busy ? "Uploading…" : "Publish highlight"}
+          {busy ? progress.label || "Uploading…" : "Publish highlight"}
         </button>
       </form>
     </section>

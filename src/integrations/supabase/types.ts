@@ -90,6 +90,7 @@ export type Database = {
           is_trending: boolean
           language: string | null
           poster_url: string
+          production_company: string | null
           rating: number | null
           thumbnail_url: string | null
           title: string
@@ -109,6 +110,7 @@ export type Database = {
           is_trending?: boolean
           language?: string | null
           poster_url: string
+          production_company?: string | null
           rating?: number | null
           thumbnail_url?: string | null
           title: string
@@ -128,12 +130,58 @@ export type Database = {
           is_trending?: boolean
           language?: string | null
           poster_url?: string
+          production_company?: string | null
           rating?: number | null
           thumbnail_url?: string | null
           title?: string
           translator?: string | null
           video_url?: string | null
           year?: number | null
+        }
+        Relationships: []
+      }
+      premium_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          method: string
+          note: string | null
+          payer_phone: string | null
+          plan: string
+          reference: string | null
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          method: string
+          note?: string | null
+          payer_phone?: string | null
+          plan: string
+          reference?: string | null
+          status?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          method?: string
+          note?: string | null
+          payer_phone?: string | null
+          plan?: string
+          reference?: string | null
+          status?: string
+          user_id?: string | null
         }
         Relationships: []
       }

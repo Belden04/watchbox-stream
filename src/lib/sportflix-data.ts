@@ -13,6 +13,7 @@ export type Movie = {
   country: string;
   translator?: string;
   director: string;
+  production_company?: string;
   description: string;
   downloads: number;
   is_translated: boolean;
@@ -60,6 +61,7 @@ export function mapMovieRow(m: any): Movie {
     country: m.country ?? "",
     translator: m.translator ?? undefined,
     director: m.director ?? "",
+    production_company: m.production_company ?? "",
     description: m.description ?? "",
     downloads: m.downloads ?? 0,
     is_translated: !!m.is_translated,

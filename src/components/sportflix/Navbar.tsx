@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Search, Menu, X, User, Crown, LogOut, Shield } from "lucide-react";
+import { Menu, X, User, Crown, LogOut, Shield } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { SFMark } from "./SFMark";
+import { SearchAutocomplete } from "./SearchAutocomplete";
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -57,13 +58,8 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="relative hidden md:block">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search…"
-              className="w-56 rounded-full border border-border bg-secondary/60 py-1.5 pl-9 pr-4 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary lg:w-64"
-            />
+          <div className="hidden md:block">
+            <SearchAutocomplete />
           </div>
           {user ? (
             <button
@@ -99,6 +95,7 @@ export function Navbar() {
       {open && (
         <div className="glass-strong border-t border-border px-4 py-4 lg:hidden">
           <div className="flex flex-col gap-3">
+            <SearchAutocomplete compact />
             {NAV.map((n) => (
               <Link
                 key={n.to}

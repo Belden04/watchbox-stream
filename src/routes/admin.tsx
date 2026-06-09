@@ -203,6 +203,7 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
     language: "EN",
     country: "",
     director: "",
+    production_company: "",
     translator: "",
     duration: "",
     rating: 0,
@@ -254,6 +255,7 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
       </h2>
       <form onSubmit={submit} className="grid gap-3 md:grid-cols-2">
         <input required placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="input" />
+        <input placeholder="Production company (e.g. Warner Bros)" value={form.production_company} onChange={(e) => setForm({ ...form, production_company: e.target.value })} className="input" />
         <input placeholder="Director" value={form.director} onChange={(e) => setForm({ ...form, director: e.target.value })} className="input" />
         <input placeholder="Genre" value={form.genre} onChange={(e) => setForm({ ...form, genre: e.target.value })} className="input" />
         <input placeholder="Language (EN, KIN, EN/KIN...)" value={form.language} onChange={(e) => setForm({ ...form, language: e.target.value })} className="input" />

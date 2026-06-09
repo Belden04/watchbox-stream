@@ -1,20 +1,65 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Zap } from "lucide-react";
+import { useState } from "react";
+import { Check, Zap, Smartphone, CreditCard, Phone, Copy } from "lucide-react";
+import { toast } from "sonner";
 import { PREMIUM_PLANS } from "@/lib/sportflix-data";
+import { supabase } from "@/integrations/supabase/client";
+
+const db = supabase as any;
+
+const PAY_PHONE = "0784797918";
+const PAYPAL_EMAIL = "beldenbyiringiro116@gmail.com";
+
+type Method = "momo" | "airtel" | "paypal";
+
+const METHODS: { id: Method; label: string; icon: React.ReactNode; tag: string; detail: string }[] = [
+  { id: "momo", label: "MTN Mobile Money", icon: <Smartphone className="size-5" />, tag: "MoMo Pay", detail: `Send to ${PAY_PHONE}` },
+  { id: "airtel", label: "Airtel Money", icon: <Phone className="size-5" />, tag: "Airtel", detail: `Send to ${PAY_PHONE}` },
+  { id: "paypal", label: "PayPal", icon: <CreditCard className="size-5" />, tag: "PayPal", detail: PAYPAL_EMAIL },
+];
 
 export const Route = createFileRoute("/premium")({
   head: () => ({
     meta: [
       { title: "Premium — SPORTFLIX" },
-      { name: "description", content: "Go Premium for ad-free, 4K Ultra HD, exclusive originals, faster downloads, and early access." },
-      { property: "og:title", content: "SPORTFLIX Premium" },
-      { property: "og:description", content: "Ad-free 4K streaming, exclusive content, faster downloads." },
+      { name: "description", content: "Go Premium for ad-free 4K, exclusive originals, and faster downloads." },
     ],
   }),
   component: PremiumPage,
 });
 
 function PremiumPage() {
+  const [plan, setPlan] = useState(PREMIUM_PLANS[1]);
+  const [method, setMethod] = useState<Method>("momo");
+  const [form, setForm] = useState({ full_name: "", email: "", payer_phone: "", reference: "", note: "" });
+  const [busy, setBusy] = useState(false);
+
+  const copy = async (text: string) => {
+    await navigator.clipboard.writeText(text);
+    toast.success("Copied");
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (plan.price <= 0) return toast.error("Pick a paid plan first");
+    setBusy(true);
+    const { error } = await db.from("premium_payments").insert({
+      full_name: form.full_name,
+      email: form.email,
+      method,
+      payer_phone: form.payer_phone,
+      reference: form.reference,
+      plan: plan.name,
+      amount: plan.price,
+      note: form.note,
+      user_id: (await supabase.auth.getUser()).data.user?.id ?? null,
+    });
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    toast.success("Payment claim submitted — the admin will verify shortly.");
+    setForm({ full_name: "", email: "", payer_phone: "", reference: "", note: "" });
+  };
+
   return (
     <div className="pt-24">
       <div className="mx-auto max-w-[1400px] px-4 md:px-8">
@@ -26,50 +71,116 @@ function PremiumPage() {
             Built for <span className="text-gradient-primary">superfans</span>.
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">
-            Watch as a guest, or unlock the full SPORTFLIX arena — zero ads, 4K, exclusive drops, faster downloads.
+            Pick a plan, pay via MoMo / Airtel Money / PayPal, and the admin activates your account.
           </p>
         </header>
 
-        <div className="grid gap-6 pb-20 lg:grid-cols-3">
-          {PREMIUM_PLANS.map((p) => (
-            <div
-              key={p.name}
-              className={`relative rounded-2xl border p-8 transition-all hover-lift ${
-                p.highlight
-                  ? "border-primary bg-gradient-to-br from-primary/10 to-surface shadow-[var(--shadow-glow-primary)]"
-                  : "border-border bg-surface"
-              }`}
-            >
-              {p.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-[10px] font-black uppercase tracking-widest text-primary-foreground">
-                  Most Popular
-                </div>
-              )}
-              <h3 className="font-display text-2xl font-black">{p.name}</h3>
-              <div className="mt-4 flex items-baseline gap-1">
-                <span className="font-display text-5xl font-black">${p.price}</span>
-                <span className="text-sm text-muted-foreground">/ {p.period}</span>
-              </div>
-              <ul className="mt-8 space-y-3">
-                {p.features.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm">
-                    <Check className={`mt-0.5 size-4 shrink-0 ${p.highlight ? "text-primary" : "text-accent"}`} />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
+        {/* Plans */}
+        <div className="grid gap-6 pb-12 lg:grid-cols-3">
+          {PREMIUM_PLANS.map((p) => {
+            const selected = plan.name === p.name;
+            return (
               <button
-                className={`mt-10 w-full rounded-lg py-3 font-black uppercase tracking-wider transition-all ${
-                  p.highlight
-                    ? "bg-primary text-primary-foreground hover:scale-105"
-                    : "border border-border bg-surface-2 hover:border-primary hover:text-primary"
+                key={p.name}
+                type="button"
+                onClick={() => setPlan(p)}
+                className={`relative rounded-2xl border p-8 text-left transition-all hover-lift ${
+                  selected
+                    ? "border-primary bg-gradient-to-br from-primary/10 to-surface shadow-[var(--shadow-glow-primary)]"
+                    : "border-border bg-surface"
                 }`}
               >
-                {p.cta}
+                {p.highlight && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-[10px] font-black uppercase tracking-widest text-primary-foreground">
+                    Most Popular
+                  </div>
+                )}
+                <h3 className="font-display text-2xl font-black">{p.name}</h3>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className="font-display text-5xl font-black">${p.price}</span>
+                  <span className="text-sm text-muted-foreground">/ {p.period}</span>
+                </div>
+                <ul className="mt-8 space-y-3">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-start gap-3 text-sm">
+                      <Check className={`mt-0.5 size-4 shrink-0 ${selected ? "text-primary" : "text-accent"}`} />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <span
+                  className={`mt-10 block w-full rounded-lg py-3 text-center font-black uppercase tracking-wider transition-all ${
+                    selected
+                      ? "bg-primary text-primary-foreground"
+                      : "border border-border bg-surface-2"
+                  }`}
+                >
+                  {selected ? "Selected" : "Choose plan"}
+                </span>
               </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
+
+        {plan.price > 0 && (
+          <section className="grid gap-8 pb-20 lg:grid-cols-2">
+            {/* Pay-to instructions */}
+            <div className="rounded-2xl border border-border bg-surface p-6">
+              <h2 className="mb-4 font-display text-xl font-black">1. Pay <span className="text-primary">${plan.price}</span> via</h2>
+              <div className="mb-4 grid grid-cols-3 gap-2">
+                {METHODS.map((m) => (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => setMethod(m.id)}
+                    className={`flex flex-col items-center gap-1 rounded-lg border px-2 py-3 text-xs font-bold transition-all ${
+                      method === m.id
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border bg-surface-2 text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {m.icon}
+                    {m.tag}
+                  </button>
+                ))}
+              </div>
+              {METHODS.filter((m) => m.id === method).map((m) => (
+                <div key={m.id} className="rounded-lg border border-primary/30 bg-primary/5 p-4">
+                  <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">{m.label}</p>
+                  <div className="mt-2 flex items-center justify-between gap-2">
+                    <p className="font-display text-lg font-black">{m.id === "paypal" ? PAYPAL_EMAIL : PAY_PHONE}</p>
+                    <button
+                      type="button"
+                      onClick={() => copy(m.id === "paypal" ? PAYPAL_EMAIL : PAY_PHONE)}
+                      className="rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-bold hover:border-primary hover:text-primary"
+                    >
+                      <Copy className="-mt-0.5 mr-1 inline size-3" /> Copy
+                    </button>
+                  </div>
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    Use your name or email as the reference so the admin can match your payment.
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {/* Submit claim */}
+            <form onSubmit={submit} className="space-y-3 rounded-2xl border border-border bg-surface p-6">
+              <h2 className="mb-2 font-display text-xl font-black">2. Confirm your payment</h2>
+              <input required placeholder="Full name" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} className="input w-full" />
+              <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="input w-full" />
+              <input placeholder={method === "paypal" ? "PayPal email used" : "Phone number used to pay"} value={form.payer_phone} onChange={(e) => setForm({ ...form, payer_phone: e.target.value })} className="input w-full" />
+              <input placeholder="Transaction ID / reference (optional)" value={form.reference} onChange={(e) => setForm({ ...form, reference: e.target.value })} className="input w-full" />
+              <textarea placeholder="Note (optional)" value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} className="input w-full" rows={3} />
+              <button disabled={busy} className="w-full rounded-lg bg-primary py-3 font-black uppercase tracking-wider text-primary-foreground transition-transform hover:scale-[1.01] disabled:opacity-60">
+                {busy ? "Submitting…" : `Submit payment for ${plan.name}`}
+              </button>
+              <p className="text-center text-[11px] text-muted-foreground">
+                The admin is notified and will activate your account once the payment is verified.
+              </p>
+            </form>
+          </section>
+        )}
       </div>
     </div>
   );

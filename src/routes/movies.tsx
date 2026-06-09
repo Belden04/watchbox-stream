@@ -1,11 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { zodValidator, fallback } from "@tanstack/zod-adapter";
+import { z } from "zod";
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Building2, X } from "lucide-react";
 import { CATEGORIES, mapMovieRow, type Movie } from "@/lib/sportflix-data";
 import { MovieCard } from "@/components/sportflix/MovieCard";
 import { supabase } from "@/integrations/supabase/client";
 
+const searchSchema = z.object({
+  q: fallback(z.string(), "").default(""),
+  company: fallback(z.string(), "").default(""),
+});
+
 export const Route = createFileRoute("/movies")({
+  validateSearch: zodValidator(searchSchema),
   head: () => ({
     meta: [
       { title: "Movies — SPORTFLIX" },
@@ -18,11 +26,15 @@ export const Route = createFileRoute("/movies")({
 const db = supabase as any;
 
 function MoviesPage() {
-  const [q, setQ] = useState("");
+  const { q: qParam, company: companyParam } = Route.useSearch();
+  const navigate = Route.useNavigate();
+  const [q, setQ] = useState(qParam);
   const [genre, setGenre] = useState("All");
   const [tab, setTab] = useState<"all" | "translated" | "non">("all");
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => { setQ(qParam); }, [qParam]);
 
   useEffect(() => {
     db.from("movies")
@@ -36,9 +48,11 @@ function MoviesPage() {
 
   const filtered = useMemo(() => {
     const ql = q.toLowerCase();
+    const companyL = companyParam.toLowerCase();
     return movies.filter((m) => {
       if (tab === "translated" && !m.is_translated) return false;
       if (tab === "non" && m.is_translated) return false;
+      if (companyL && (m.production_company ?? "").toLowerCase() !== companyL) return false;
       const matchQ =
         !ql ||
         m.title.toLowerCase().includes(ql) ||
@@ -46,18 +60,21 @@ function MoviesPage() {
         m.director.toLowerCase().includes(ql) ||
         m.country.toLowerCase().includes(ql) ||
         m.language.toLowerCase().includes(ql) ||
+        (m.production_company ?? "").toLowerCase().includes(ql) ||
         (m.translator ?? "").toLowerCase().includes(ql) ||
         String(m.year).includes(ql);
       const matchG = genre === "All" || m.genre.includes(genre);
       return matchQ && matchG;
     });
-  }, [q, genre, tab, movies]);
+  }, [q, genre, tab, movies, companyParam]);
 
   const tabs: { key: typeof tab; label: string; count: number }[] = [
     { key: "all", label: "All", count: movies.length },
     { key: "translated", label: "Translated (Umusobanuwe)", count: movies.filter((m) => m.is_translated).length },
     { key: "non", label: "Non-Translated", count: movies.filter((m) => !m.is_translated).length },
   ];
+
+  const clearCompany = () => navigate({ search: { q, company: "" } as any });
 
   return (
     <div className="pt-24">
@@ -67,6 +84,15 @@ function MoviesPage() {
           <p className="max-w-2xl text-muted-foreground">
             Translated and non-translated films, uploaded by the SPORTFLIX team.
           </p>
+          {companyParam && (
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-sm">
+              <Building2 className="size-4 text-primary" />
+              <span>Filtering by company: <span className="font-bold text-primary">{companyParam}</span></span>
+              <button onClick={clearCompany} className="ml-1 grid size-5 place-items-center rounded-full hover:bg-primary/20">
+                <X className="size-3" />
+              </button>
+            </div>
+          )}
         </header>
 
         <div className="mb-6 flex flex-wrap gap-2 border-b border-border">
@@ -89,8 +115,11 @@ function MoviesPage() {
             <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               value={q}
-              onChange={(e) => setQ(e.target.value)}
-              placeholder="Search title, genre, director, country, year, translator..."
+              onChange={(e) => {
+                setQ(e.target.value);
+                navigate({ search: { q: e.target.value, company: companyParam } as any, replace: true });
+              }}
+              placeholder="Search title, company, genre, director, country, year, translator..."
               className="w-full rounded-full border border-border bg-surface-2 py-3 pl-11 pr-5 text-sm placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>

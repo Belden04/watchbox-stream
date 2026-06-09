@@ -95,7 +95,7 @@ export function Navbar() {
       {open && (
         <div className="glass-strong border-t border-border px-4 py-4 lg:hidden">
           <div className="flex flex-col gap-3">
-            {NAV.map((n) => (
+            <SearchAutocomplete compact />
               <Link
                 key={n.to}
                 to={n.to}

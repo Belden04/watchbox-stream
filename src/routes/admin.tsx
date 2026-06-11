@@ -5,6 +5,7 @@ import { Trash2, Upload, Star, Crown, BarChart3, Download as DownloadIcon, Eye }
 import { supabase } from "@/integrations/supabase/client";
 const db = supabase as any;
 import { useAuth } from "@/lib/auth";
+import { resumableUpload } from "@/lib/resumable-upload";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — SPORTFLIX" }] }),
@@ -148,28 +149,9 @@ async function uploadTo(
   file: File,
   onProgress?: (pct: number) => void,
 ): Promise<string> {
-  const path = `${Date.now()}-${file.name.replace(/[^\w.-]+/g, "-")}`;
-  // Use a signed XHR PUT to Supabase storage so we can report progress.
-  // Fall back to the SDK if the signed-upload endpoint is unavailable.
-  const { data: signed, error: signErr } = await supabase.storage
-    .from(bucket)
-    .createSignedUploadUrl(path);
-  if (signErr || !signed) {
-    const { error } = await supabase.storage.from(bucket).upload(path, file);
-    if (error) throw error;
-  } else {
-    await new Promise<void>((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("PUT", signed.signedUrl, true);
-      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
-      xhr.upload.onprogress = (ev) => {
-        if (ev.lengthComputable && onProgress) onProgress(Math.round((ev.loaded / ev.total) * 100));
-      };
-      xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error(`Upload failed (${xhr.status})`)));
-      xhr.onerror = () => reject(new Error("Network error during upload"));
-      xhr.send(file);
-    });
-  }
+  // Always use the resumable (TUS) protocol — supports multi-GB files,
+  // resumes after disconnects, and never trips the 50 MB single-request cap.
+  const path = await resumableUpload(bucket, file, onProgress);
   const { data: s, error: sErr } = await supabase.storage.from(bucket).createSignedUrl(path, SIGNED_TTL);
   if (sErr || !s) throw sErr ?? new Error("Could not create signed URL");
   onProgress?.(100);

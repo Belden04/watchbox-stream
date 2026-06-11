@@ -33,6 +33,8 @@ function PremiumPage() {
   const [method, setMethod] = useState<Method>("momo");
   const [form, setForm] = useState({ full_name: "", email: "", payer_phone: "", reference: "", note: "" });
   const [busy, setBusy] = useState(false);
+  const [pinStage, setPinStage] = useState<null | "prompt" | "verifying" | "submitted">(null);
+  const [pin, setPin] = useState("");
 
   const copy = async (text: string) => {
     await navigator.clipboard.writeText(text);
@@ -42,6 +44,15 @@ function PremiumPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (plan.price <= 0) return toast.error("Pick a paid plan first");
+    if (method !== "paypal") {
+      // Simulated MoMo / Airtel STK push — phone prompt before claim is recorded
+      setPinStage("prompt");
+      return;
+    }
+    await actuallySubmit();
+  };
+
+  const actuallySubmit = async () => {
     setBusy(true);
     const { error } = await db.from("premium_payments").insert({
       full_name: form.full_name,
@@ -58,6 +69,17 @@ function PremiumPage() {
     if (error) return toast.error(error.message);
     toast.success("Payment claim submitted — the admin will verify shortly.");
     setForm({ full_name: "", email: "", payer_phone: "", reference: "", note: "" });
+    setPinStage("submitted");
+  };
+
+  const confirmPin = async () => {
+    if (pin.length < 4) return toast.error("Enter your 4–6 digit PIN");
+    setPinStage("verifying");
+    // Simulated verification delay so the UX feels real.
+    setTimeout(async () => {
+      setPin("");
+      await actuallySubmit();
+    }, 1800);
   };
 
   return (

@@ -5,6 +5,7 @@ import { Trash2, Upload, Star, Crown, BarChart3, Download as DownloadIcon, Eye }
 import { supabase } from "@/integrations/supabase/client";
 const db = supabase as any;
 import { useAuth } from "@/lib/auth";
+import { resumableUpload } from "@/lib/resumable-upload";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — SPORTFLIX" }] }),
@@ -78,23 +79,13 @@ function AdminPage() {
       <div className="grid min-h-screen place-items-center px-4 pt-24">
         <div className="max-w-md space-y-4 rounded-xl border border-border bg-surface p-8 text-center">
           <Crown className="mx-auto size-10 text-primary" />
-          <h1 className="font-display text-2xl font-black">Become admin</h1>
+          <h1 className="font-display text-2xl font-black">Admin only</h1>
           <p className="text-sm text-muted-foreground">
-            If no admin exists yet, you can claim ownership of this SPORTFLIX instance.
+            This area is reserved for SPORTFLIX administrators.
           </p>
-          <button
-            onClick={async () => {
-              const { data, error } = await db.rpc("claim_admin");
-              if (error) return toast.error(error.message);
-              if (data) {
-                toast.success("You are now admin!");
-                await refreshRole();
-              } else toast.error("An admin already exists.");
-            }}
-            className="rounded-md bg-primary px-6 py-2 font-bold text-primary-foreground"
-          >
-            Claim admin role
-          </button>
+          <Link to="/" className="inline-block rounded-md border border-border px-6 py-2 font-bold hover:border-primary hover:text-primary">
+            Back home
+          </Link>
         </div>
       </div>
     );
@@ -148,28 +139,9 @@ async function uploadTo(
   file: File,
   onProgress?: (pct: number) => void,
 ): Promise<string> {
-  const path = `${Date.now()}-${file.name.replace(/[^\w.-]+/g, "-")}`;
-  // Use a signed XHR PUT to Supabase storage so we can report progress.
-  // Fall back to the SDK if the signed-upload endpoint is unavailable.
-  const { data: signed, error: signErr } = await supabase.storage
-    .from(bucket)
-    .createSignedUploadUrl(path);
-  if (signErr || !signed) {
-    const { error } = await supabase.storage.from(bucket).upload(path, file);
-    if (error) throw error;
-  } else {
-    await new Promise<void>((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("PUT", signed.signedUrl, true);
-      xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream");
-      xhr.upload.onprogress = (ev) => {
-        if (ev.lengthComputable && onProgress) onProgress(Math.round((ev.loaded / ev.total) * 100));
-      };
-      xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error(`Upload failed (${xhr.status})`)));
-      xhr.onerror = () => reject(new Error("Network error during upload"));
-      xhr.send(file);
-    });
-  }
+  // Always use the resumable (TUS) protocol — supports multi-GB files,
+  // resumes after disconnects, and never trips the 50 MB single-request cap.
+  const path = await resumableUpload(bucket, file, onProgress);
   const { data: s, error: sErr } = await supabase.storage.from(bucket).createSignedUrl(path, SIGNED_TTL);
   if (sErr || !s) throw sErr ?? new Error("Could not create signed URL");
   onProgress?.(100);

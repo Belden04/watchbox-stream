@@ -1,19 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
-import { z } from "zod";
 import { useEffect, useMemo, useState } from "react";
 import { Search, Building2, X } from "lucide-react";
 import { CATEGORIES, mapMovieRow, type Movie } from "@/lib/sportflix-data";
 import { MovieCard } from "@/components/sportflix/MovieCard";
 import { supabase } from "@/integrations/supabase/client";
 
-const searchSchema = z.object({
-  q: fallback(z.string(), "").default(""),
-  company: fallback(z.string(), "").default(""),
-});
+type MoviesSearch = { q: string; company: string };
 
 export const Route = createFileRoute("/movies")({
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (search: Record<string, unknown>): MoviesSearch => ({
+    q: typeof search.q === "string" ? search.q : "",
+    company: typeof search.company === "string" ? search.company : "",
+  }),
   head: () => ({
     meta: [
       { title: "Movies — SPORTFLIX" },

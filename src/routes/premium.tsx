@@ -204,6 +204,56 @@ function PremiumPage() {
           </section>
         )}
       </div>
+
+      {/* Simulated MoMo / Airtel PIN prompt */}
+      {pinStage && (
+        <div className="fixed inset-0 z-[100] grid place-items-center bg-black/80 p-4 backdrop-blur-sm" onClick={() => pinStage !== "verifying" && setPinStage(null)}>
+          <div className="w-full max-w-sm rounded-2xl border border-primary/40 bg-surface p-6 text-center shadow-[var(--shadow-glow-primary)]" onClick={(e) => e.stopPropagation()}>
+            {pinStage === "prompt" && (
+              <>
+                <Smartphone className="mx-auto mb-3 size-10 text-primary" />
+                <h3 className="font-display text-lg font-black">Check your phone</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  A {method === "momo" ? "MTN MoMo" : "Airtel Money"} request to send <span className="font-bold text-primary">${plan.price}</span> to <span className="font-bold">{PAY_PHONE}</span> was sent to your phone. Enter your PIN to confirm.
+                </p>
+                <input
+                  type="password"
+                  inputMode="numeric"
+                  maxLength={6}
+                  autoFocus
+                  value={pin}
+                  onChange={(e) => setPin(e.target.value.replace(/\D/g, ""))}
+                  placeholder="••••"
+                  className="input mt-5 w-full text-center text-2xl tracking-[0.6em]"
+                />
+                <div className="mt-4 flex gap-2">
+                  <button onClick={() => setPinStage(null)} className="flex-1 rounded-lg border border-border py-2.5 text-sm font-bold hover:border-primary">Cancel</button>
+                  <button onClick={confirmPin} className="flex-1 rounded-lg bg-primary py-2.5 text-sm font-black uppercase tracking-wider text-primary-foreground">Confirm</button>
+                </div>
+              </>
+            )}
+            {pinStage === "verifying" && (
+              <div className="py-6">
+                <div className="mx-auto mb-4 size-10 animate-spin rounded-full border-4 border-primary/30 border-t-primary" />
+                <p className="font-display text-sm font-black uppercase tracking-widest text-primary">Verifying…</p>
+                <p className="mt-1 text-xs text-muted-foreground">Hold on while the network confirms your transfer.</p>
+              </div>
+            )}
+            {pinStage === "submitted" && (
+              <>
+                <div className="mx-auto mb-3 grid size-12 place-items-center rounded-full bg-primary/20 text-primary">
+                  <Check className="size-6" />
+                </div>
+                <h3 className="font-display text-lg font-black">Payment claim received</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  The admin sees your payment of <span className="font-bold text-primary">${plan.price}</span> and will activate your account shortly. Funds are received at <span className="font-bold">{PAY_PHONE}</span>.
+                </p>
+                <button onClick={() => setPinStage(null)} className="mt-5 w-full rounded-lg bg-primary py-2.5 text-sm font-black uppercase tracking-wider text-primary-foreground">Done</button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

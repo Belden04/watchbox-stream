@@ -127,6 +127,7 @@ export function Hero({ movies }: { movies: Movie[] }) {
         poster={image}
         contentType="movie"
         contentId={slide.id}
+        movie={slide as any}
       />
     </section>
   );

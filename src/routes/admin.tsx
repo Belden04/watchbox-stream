@@ -182,6 +182,9 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
     description: "",
     is_translated: false,
     is_trending: false,
+    series_title: "",
+    season_number: "" as string | number,
+    episode_number: "" as string | number,
   });
 
   const submit = async (e: React.FormEvent) => {
@@ -201,8 +204,11 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
         setProgress({ label: "Uploading video…", pct: 0 });
         video_url = await uploadTo("videos", video, (p) => setProgress({ label: "Uploading video…", pct: p }));
       }
-      const payload = { ...form, poster_url, thumbnail_url, video_url };
+      const payload: any = { ...form, poster_url, thumbnail_url, video_url };
       if (!form.is_translated) payload.translator = "";
+      payload.series_title = form.series_title?.trim() || null;
+      payload.season_number = form.season_number === "" ? null : Number(form.season_number);
+      payload.episode_number = form.episode_number === "" ? null : Number(form.episode_number);
       const { error } = await db.from("movies").insert(payload);
       if (error) throw error;
       toast.success("Movie published");
@@ -254,6 +260,39 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
           <input type="checkbox" checked={form.is_trending} onChange={(e) => setForm({ ...form, is_trending: e.target.checked })} />
           Add to Trending playlist
         </label>
+
+        <div className="rounded-lg border border-dashed border-border p-3 md:col-span-2">
+          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.3em] text-primary">
+            Series / Season (optional)
+          </p>
+          <div className="grid gap-3 md:grid-cols-3">
+            <input
+              placeholder="Series title (e.g. Money Heist)"
+              value={form.series_title}
+              onChange={(e) => setForm({ ...form, series_title: e.target.value })}
+              className="input md:col-span-3"
+            />
+            <input
+              type="number"
+              min={1}
+              placeholder="Season #"
+              value={form.season_number}
+              onChange={(e) => setForm({ ...form, season_number: e.target.value })}
+              className="input"
+            />
+            <input
+              type="number"
+              min={1}
+              placeholder="Episode #"
+              value={form.episode_number}
+              onChange={(e) => setForm({ ...form, episode_number: e.target.value })}
+              className="input"
+            />
+            <p className="self-center text-[11px] text-muted-foreground">
+              Leave blank for standalone movies. When set, episodes auto-arrange in the player.
+            </p>
+          </div>
+        </div>
 
         <label className="text-xs text-muted-foreground">
           Poster image (vertical, 2:3) *

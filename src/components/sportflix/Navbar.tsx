@@ -8,7 +8,6 @@ import { SearchAutocomplete } from "./SearchAutocomplete";
 const NAV = [
   { to: "/", label: "Home" },
   { to: "/movies", label: "Movies" },
-  { to: "/sports", label: "Sports" },
   { to: "/categories", label: "Categories" },
   { to: "/premium", label: "Premium" },
   { to: "/watchlist", label: "Watchlist" },

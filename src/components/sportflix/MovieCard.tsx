@@ -86,6 +86,7 @@ export function MovieCard({ movie, progress, inWatchlist, onWatchlistChange }: P
         poster={img}
         contentType="movie"
         contentId={movie.id}
+        movie={movie}
       />
     </>
   );

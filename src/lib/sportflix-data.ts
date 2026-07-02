@@ -18,6 +18,9 @@ export type Movie = {
   downloads: number;
   is_translated: boolean;
   video_url?: string | null;
+  series_title?: string | null;
+  season_number?: number | null;
+  episode_number?: number | null;
 };
 
 export type Highlight = {
@@ -66,6 +69,9 @@ export function mapMovieRow(m: any): Movie {
     downloads: m.downloads ?? 0,
     is_translated: !!m.is_translated,
     video_url: m.video_url,
+    series_title: m.series_title ?? null,
+    season_number: m.season_number ?? null,
+    episode_number: m.episode_number ?? null,
   };
 }
 

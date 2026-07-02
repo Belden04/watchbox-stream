@@ -84,6 +84,7 @@ export type Database = {
           description: string | null
           director: string | null
           duration: string | null
+          episode_number: number | null
           genre: string | null
           id: string
           is_translated: boolean
@@ -92,6 +93,8 @@ export type Database = {
           poster_url: string
           production_company: string | null
           rating: number | null
+          season_number: number | null
+          series_title: string | null
           thumbnail_url: string | null
           title: string
           translator: string | null
@@ -104,6 +107,7 @@ export type Database = {
           description?: string | null
           director?: string | null
           duration?: string | null
+          episode_number?: number | null
           genre?: string | null
           id?: string
           is_translated?: boolean
@@ -112,6 +116,8 @@ export type Database = {
           poster_url: string
           production_company?: string | null
           rating?: number | null
+          season_number?: number | null
+          series_title?: string | null
           thumbnail_url?: string | null
           title: string
           translator?: string | null
@@ -124,6 +130,7 @@ export type Database = {
           description?: string | null
           director?: string | null
           duration?: string | null
+          episode_number?: number | null
           genre?: string | null
           id?: string
           is_translated?: boolean
@@ -132,6 +139,8 @@ export type Database = {
           poster_url?: string
           production_company?: string | null
           rating?: number | null
+          season_number?: number | null
+          series_title?: string | null
           thumbnail_url?: string | null
           title?: string
           translator?: string | null

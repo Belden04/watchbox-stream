@@ -11,12 +11,12 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { Navbar } from "../components/sportflix/Navbar";
+import { Sidebar } from "../components/sportflix/Sidebar";
 import { Footer } from "../components/sportflix/Footer";
 import { Splash } from "../components/sportflix/Splash";
 import { AuthProvider } from "../lib/auth";
 import { Toaster } from "sonner";
-import { SF_FAVICON } from "../lib/sf-favicon";
+import { WB_FAVICON } from "../lib/wb-favicon";
 
 
 function NotFoundComponent() {

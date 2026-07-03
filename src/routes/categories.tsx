@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { CATEGORIES } from "@/lib/watchbox7-data";
+import { CATEGORIES } from "@/lib/sportflix-data";
 import { Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/categories")({

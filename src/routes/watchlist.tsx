@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Bookmark } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { mapMovieRow, mapHighlightRow, type Movie, type Highlight } from "@/lib/watchbox7-data";
+import { mapMovieRow, mapHighlightRow, type Movie, type Highlight } from "@/lib/sportflix-data";
 import { MovieCard } from "@/components/sportflix/MovieCard";
 import { HighlightCard } from "@/components/sportflix/HighlightCard";
 

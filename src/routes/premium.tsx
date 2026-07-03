@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Zap, Smartphone, CreditCard, Phone, Copy } from "lucide-react";
 import { toast } from "sonner";
-import { PREMIUM_PLANS } from "@/lib/watchbox7-data";
+import { PREMIUM_PLANS } from "@/lib/sportflix-data";
 import { supabase } from "@/integrations/supabase/client";
 
 const db = supabase as any;

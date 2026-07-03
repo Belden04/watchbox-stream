@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Instagram, Globe, Mail, Github, Linkedin, Twitter, Youtube, MapPin } from "lucide-react";
-import { WBMark } from "@/components/watchbox7/WBMark";
+import { WBMark } from "@/components/sportflix/WBMark";
 import beldenPhoto from "@/assets/belden.webp.asset.json";
 
 export const Route = createFileRoute("/bio")({

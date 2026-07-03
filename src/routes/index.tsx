@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, Zap } from "lucide-react";
-import { Hero } from "@/components/watchbox7/Hero";
-import { Rail } from "@/components/watchbox7/Rail";
-import { MovieCard } from "@/components/watchbox7/MovieCard";
+import { Hero } from "@/components/sportflix/Hero";
+import { Rail } from "@/components/sportflix/Rail";
+import { MovieCard } from "@/components/sportflix/MovieCard";
 import { mapMovieRow, PREMIUM_PLANS, type Movie } from "@/lib/watchbox7-data";
 import { supabase } from "@/integrations/supabase/client";
 

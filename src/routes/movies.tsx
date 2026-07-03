@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Search, Building2, X } from "lucide-react";
 import { CATEGORIES, mapMovieRow, type Movie } from "@/lib/watchbox7-data";
-import { MovieCard } from "@/components/watchbox7/MovieCard";
+import { MovieCard } from "@/components/sportflix/MovieCard";
 import { supabase } from "@/integrations/supabase/client";
 
 type MoviesSearch = { q: string; company: string };

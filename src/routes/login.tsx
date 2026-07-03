@@ -3,7 +3,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Crown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { WBMark } from "@/components/watchbox7/WBMark";
+import { WBMark } from "@/components/sportflix/WBMark";
 
 export const Route = createFileRoute("/login")({
   head: () => ({

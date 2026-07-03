@@ -4,8 +4,8 @@ import { Bookmark } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { mapMovieRow, mapHighlightRow, type Movie, type Highlight } from "@/lib/watchbox7-data";
-import { MovieCard } from "@/components/watchbox7/MovieCard";
-import { HighlightCard } from "@/components/watchbox7/HighlightCard";
+import { MovieCard } from "@/components/sportflix/MovieCard";
+import { HighlightCard } from "@/components/sportflix/HighlightCard";
 
 const db = supabase as any;
 

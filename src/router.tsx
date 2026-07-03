@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-import { SFFullPageLoader } from "./components/watchbox7/SFLoader";
+import { SFFullPageLoader } from "./components/sportflix/SFLoader";
 
 export const getRouter = () => {
   const queryClient = new QueryClient();

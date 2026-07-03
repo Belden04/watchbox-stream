@@ -36,7 +36,7 @@ function CategoriesPage() {
         </header>
 
         <div className="grid gap-3 pb-20 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {CATEGORIES.map((c, i) => {
+          {CATEGORIES.map((c: string, i: number) => {
             const grad = ACCENTS[i % ACCENTS.length];
             return (
               <Link

@@ -12,7 +12,7 @@ const db = supabase as any;
 export const Route = createFileRoute("/watchlist")({
   head: () => ({
     meta: [
-      { title: "Watchlist — SPORTFLIX" },
+      { title: "Watchlist — WatchBox7" },
       { name: "description", content: "Your saved movies and highlights." },
     ],
   }),

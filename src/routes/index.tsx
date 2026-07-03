@@ -12,9 +12,9 @@ const db = supabase as any;
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SPORTFLIX | The home of translated & non-translated & all matches highlights" },
+      { title: "WatchBox7 | The home of translated & non-translated & all matches highlights" },
       { name: "description", content: "Translated & non-translated movies and all matches highlights. Watch and download as a guest." },
-      { property: "og:title", content: "SPORTFLIX" },
+      { property: "og:title", content: "WatchBox7" },
     ],
   }),
   component: Home,

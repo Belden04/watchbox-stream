@@ -11,12 +11,12 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { Navbar } from "../components/sportflix/Navbar";
+import { Sidebar } from "../components/sportflix/Sidebar";
 import { Footer } from "../components/sportflix/Footer";
 import { Splash } from "../components/sportflix/Splash";
 import { AuthProvider } from "../lib/auth";
 import { Toaster } from "sonner";
-import { SF_FAVICON } from "../lib/sf-favicon";
+import { WB_FAVICON } from "../lib/wb-favicon";
 
 
 function NotFoundComponent() {
@@ -33,7 +33,7 @@ function NotFoundComponent() {
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground transition-transform hover:scale-105"
           >
-            Back to SPORTFLIX
+            Back to WatchBox7
           </Link>
         </div>
       </div>
@@ -83,28 +83,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#0d0d0d" },
-      { title: "SPORTFLIX | The home of translated & non-translated & all matches highlights" },
+      { title: "WatchBox7 | The home of translated & non-translated movies" },
       {
         name: "description",
         content:
-          "SPORTFLIX — the home of translated & non-translated movies and all matches highlights. Watch and download as a guest.",
+          "WatchBox7 — the home of translated & non-translated movies and full-series episodes. Watch and download as a guest.",
       },
       { name: "author", content: "Belden Right" },
-      { property: "og:title", content: "SPORTFLIX | The home of translated & non-translated & all matches highlights" },
-      { property: "og:description", content: "Sportflix is a premium streaming platform for movies and sports highlights." },
+      { property: "og:title", content: "WatchBox7 | The home of translated & non-translated movies" },
+      { property: "og:description", content: "WatchBox7 is a premium streaming platform for movies and series." },
       { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "SPORTFLIX" },
+      { property: "og:site_name", content: "WatchBox7" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "SPORTFLIX | The home of translated & non-translated & all matches highlights" },
-      { name: "description", content: "Sportflix is a premium streaming platform for movies and sports highlights." },
-      { name: "twitter:description", content: "Sportflix is a premium streaming platform for movies and sports highlights." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/Cml0dBvx2dbnvcFhcXFvMhnigIq1/social-images/social-1780896263252-ChatGPT_Image_Jun_2,_2026,_10_11_37_AM.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/Cml0dBvx2dbnvcFhcXFvMhnigIq1/social-images/social-1780896263252-ChatGPT_Image_Jun_2,_2026,_10_11_37_AM.webp" },
+      { name: "twitter:title", content: "WatchBox7 | The home of translated & non-translated movies" },
+      { name: "twitter:description", content: "WatchBox7 is a premium streaming platform for movies and series." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/svg+xml", href: SF_FAVICON },
-      { rel: "apple-touch-icon", href: SF_FAVICON },
+      { rel: "icon", type: "image/svg+xml", href: WB_FAVICON },
+      { rel: "apple-touch-icon", href: WB_FAVICON },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -141,12 +138,14 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Splash />
-        <div className="flex min-h-screen flex-col bg-background text-foreground">
-          <Navbar />
-          <main className="flex-1">
-            <Outlet />
-          </main>
-          <Footer />
+        <div className="min-h-screen bg-background text-foreground">
+          <Sidebar />
+          <div className="flex min-h-screen flex-col pt-14 lg:pl-64 lg:pt-16">
+            <main className="flex-1">
+              <Outlet />
+            </main>
+            <Footer />
+          </div>
         </div>
         <Toaster theme="dark" position="top-center" richColors />
       </AuthProvider>

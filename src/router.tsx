@@ -11,7 +11,7 @@ export const getRouter = () => {
     context: { queryClient },
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
-    defaultPendingComponent: () => <SFFullPageLoader label="Sportflix" />,
+    defaultPendingComponent: () => <SFFullPageLoader label="WatchBox7" />,
     defaultPendingMs: 150,
   });
 

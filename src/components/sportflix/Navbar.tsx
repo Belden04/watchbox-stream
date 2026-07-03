@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, User, Crown, LogOut, Shield } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { SFMark } from "./SFMark";
+import { WBMark } from "./WBMark";
 import { SearchAutocomplete } from "./SearchAutocomplete";
 
 const NAV = [
@@ -35,7 +35,7 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-4 md:px-8">
         <div className="flex items-center gap-10">
           <Link to="/" className="flex items-center gap-2" aria-label="SPORTFLIX home">
-            <SFMark size={36} />
+            <WBMark size={36} />
           </Link>
           <div className="hidden items-center gap-6 lg:flex">
             {NAV.map((n) => (

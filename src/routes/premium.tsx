@@ -21,7 +21,7 @@ const METHODS: { id: Method; label: string; icon: React.ReactNode; tag: string; 
 export const Route = createFileRoute("/premium")({
   head: () => ({
     meta: [
-      { title: "Premium — SPORTFLIX" },
+      { title: "Premium — WatchBox7" },
       { name: "description", content: "Go Premium for ad-free 4K, exclusive originals, and faster downloads." },
     ],
   }),

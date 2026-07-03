@@ -5,8 +5,8 @@ import { MessageCircle, Instagram, Music2, Facebook, Youtube, Send, Mail } from 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — SPORTFLIX" },
-      { name: "description", content: "Get in touch with SPORTFLIX via WhatsApp, Instagram, TikTok, Facebook, YouTube, Telegram, or email." },
+      { title: "Contact — WatchBox7" },
+      { name: "description", content: "Get in touch with WatchBox7 via WhatsApp, Instagram, TikTok, Facebook, YouTube, Telegram, or email." },
     ],
   }),
   component: ContactPage,
@@ -14,11 +14,11 @@ export const Route = createFileRoute("/contact")({
 
 const CHANNELS = [
   { icon: MessageCircle, label: "WhatsApp", handle: "+250 7XX XXX XXX", href: "#", color: "text-accent" },
-  { icon: Instagram, label: "Instagram", handle: "@sportflix", href: "#", color: "text-primary" },
-  { icon: Music2, label: "TikTok", handle: "@sportflix", href: "#", color: "text-foreground" },
-  { icon: Facebook, label: "Facebook", handle: "SPORTFLIX", href: "#", color: "text-primary" },
-  { icon: Youtube, label: "YouTube", handle: "SPORTFLIX Official", href: "#", color: "text-primary" },
-  { icon: Send, label: "Telegram", handle: "@sportflix", href: "#", color: "text-accent" },
+  { icon: Instagram, label: "Instagram", handle: "@watchbox7", href: "#", color: "text-primary" },
+  { icon: Music2, label: "TikTok", handle: "@watchbox7", href: "#", color: "text-foreground" },
+  { icon: Facebook, label: "Facebook", handle: "WatchBox7", href: "#", color: "text-primary" },
+  { icon: Youtube, label: "YouTube", handle: "WatchBox7 Official", href: "#", color: "text-primary" },
+  { icon: Send, label: "Telegram", handle: "@watchbox7", href: "#", color: "text-accent" },
 ];
 
 function ContactPage() {
@@ -30,7 +30,7 @@ function ContactPage() {
         <header className="mb-12 max-w-2xl">
           <h1 className="font-display text-5xl font-black tracking-tighter md:text-6xl">Contact</h1>
           <p className="mt-4 text-muted-foreground">
-            Reach the SPORTFLIX team — for support, partnerships, content suggestions, or just to say hi.
+            Reach the WatchBox7 team — for support, partnerships, content suggestions, or just to say hi.
           </p>
         </header>
 

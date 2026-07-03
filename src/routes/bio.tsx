@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Instagram, Globe, Mail, Github, Linkedin, Twitter, Youtube, MapPin } from "lucide-react";
-import { SFMark } from "@/components/sportflix/SFMark";
+import { WBMark } from "@/components/sportflix/WBMark";
 import beldenPhoto from "@/assets/belden.webp.asset.json";
 
 export const Route = createFileRoute("/bio")({
   head: () => ({
     meta: [
-      { title: "Bio — Belden Right · SPORTFLIX" },
-      { name: "description", content: "About Belden Right, creator of SPORTFLIX — portfolio and social links." },
-      { property: "og:title", content: "Belden Right — SPORTFLIX" },
+      { title: "Bio — Belden Right · WatchBox7" },
+      { name: "description", content: "About Belden Right, creator of WatchBox7 — portfolio and social links." },
+      { property: "og:title", content: "Belden Right — WatchBox7" },
       { property: "og:image", content: beldenPhoto.url },
     ],
   }),
@@ -24,9 +24,9 @@ const LINKS = [
     color: "from-pink-500 via-fuchsia-500 to-purple-600",
   },
   {
-    label: "SPORTFLIX on Instagram",
-    sub: "@__sportflix",
-    href: "https://instagram.com/__sportflix",
+    label: "WatchBox7 on Instagram",
+    sub: "@__watchbox7",
+    href: "https://instagram.com/__watchbox7",
     icon: Instagram,
     color: "from-primary via-orange-500 to-amber-400",
   },
@@ -98,7 +98,7 @@ function BioPage() {
                 className="relative size-36 rounded-full border-4 border-background object-cover shadow-2xl md:size-44"
               />
               <span className="absolute -bottom-1 -right-1 grid size-10 place-items-center rounded-full border-4 border-background bg-gradient-to-br from-primary to-orange-400 shadow-lg">
-                <SFMark size={22} />
+                <WBMark size={22} />
               </span>
             </div>
 
@@ -111,7 +111,7 @@ function BioPage() {
                 <MapPin className="size-4 text-primary" /> Kigali, Rwanda · Building from Africa
               </p>
               <p className="max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-                Creator of <span className="font-bold text-foreground">SPORTFLIX</span> — the home of translated
+                Creator of <span className="font-bold text-foreground">WatchBox7</span> — the home of translated
                 &amp; non-translated movies and all matches highlights. Developer, designer, storyteller.
               </p>
               <div className="flex flex-wrap items-center justify-center gap-2 pt-2 md:justify-start">
@@ -153,7 +153,7 @@ function BioPage() {
         </div>
 
         <p className="mt-12 text-center text-xs uppercase tracking-[0.3em] text-muted-foreground">
-          © {new Date().getFullYear()} SPORTFLIX · Crafted by Belden Right
+          © {new Date().getFullYear()} WatchBox7 · Crafted by Belden Right
         </p>
       </div>
     </div>

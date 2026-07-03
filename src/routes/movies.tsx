@@ -14,7 +14,7 @@ export const Route = createFileRoute("/movies")({
   }),
   head: () => ({
     meta: [
-      { title: "Movies — SPORTFLIX" },
+      { title: "Movies — WatchBox7" },
       { name: "description", content: "Browse translated (umusobanuwe) and non-translated movies." },
     ],
   }),
@@ -80,7 +80,7 @@ function MoviesPage() {
         <header className="mb-8 space-y-4">
           <h1 className="font-display text-5xl font-black tracking-tighter md:text-6xl">Movies</h1>
           <p className="max-w-2xl text-muted-foreground">
-            Translated and non-translated films, uploaded by the SPORTFLIX team.
+            Translated and non-translated films, uploaded by the WatchBox7 team.
           </p>
           {companyParam && (
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-4 py-2 text-sm">

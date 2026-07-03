@@ -1,7 +1,7 @@
 type Props = { size?: number; className?: string };
 
 /** The SPORTFLIX "SF" mark — used everywhere (navbar, footer, favicon, splash). */
-export function SFMark({ size = 36, className = "" }: Props) {
+export function WBMark({ size = 36, className = "" }: Props) {
   return (
     <span
       className={`relative inline-grid place-items-center rounded-md ${className}`}

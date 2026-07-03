@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Check, Zap } from "lucide-react";
-import { Hero } from "@/components/sportflix/Hero";
-import { Rail } from "@/components/sportflix/Rail";
-import { MovieCard } from "@/components/sportflix/MovieCard";
-import { mapMovieRow, PREMIUM_PLANS, type Movie } from "@/lib/sportflix-data";
+import { Hero } from "@/components/watchbox7/Hero";
+import { Rail } from "@/components/watchbox7/Rail";
+import { MovieCard } from "@/components/watchbox7/MovieCard";
+import { mapMovieRow, PREMIUM_PLANS, type Movie } from "@/lib/watchbox7-data";
 import { supabase } from "@/integrations/supabase/client";
 
 const db = supabase as any;
@@ -12,9 +12,9 @@ const db = supabase as any;
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SPORTFLIX | The home of translated & non-translated & all matches highlights" },
+      { title: "WatchBox7 | The home of translated & non-translated & all matches highlights" },
       { name: "description", content: "Translated & non-translated movies and all matches highlights. Watch and download as a guest." },
-      { property: "og:title", content: "SPORTFLIX" },
+      { property: "og:title", content: "WatchBox7" },
     ],
   }),
   component: Home,

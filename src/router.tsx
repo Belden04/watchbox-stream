@@ -1,7 +1,7 @@
 import { QueryClient } from "@tanstack/react-query";
 import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-import { SFFullPageLoader } from "./components/sportflix/SFLoader";
+import { SFFullPageLoader } from "./components/watchbox7/SFLoader";
 
 export const getRouter = () => {
   const queryClient = new QueryClient();
@@ -11,7 +11,7 @@ export const getRouter = () => {
     context: { queryClient },
     scrollRestoration: true,
     defaultPreloadStaleTime: 0,
-    defaultPendingComponent: () => <SFFullPageLoader label="Sportflix" />,
+    defaultPendingComponent: () => <SFFullPageLoader label="WatchBox7" />,
     defaultPendingMs: 150,
   });
 

@@ -3,16 +3,16 @@ import { useEffect, useState } from "react";
 import { Bookmark } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { mapMovieRow, mapHighlightRow, type Movie, type Highlight } from "@/lib/sportflix-data";
-import { MovieCard } from "@/components/sportflix/MovieCard";
-import { HighlightCard } from "@/components/sportflix/HighlightCard";
+import { mapMovieRow, mapHighlightRow, type Movie, type Highlight } from "@/lib/watchbox7-data";
+import { MovieCard } from "@/components/watchbox7/MovieCard";
+import { HighlightCard } from "@/components/watchbox7/HighlightCard";
 
 const db = supabase as any;
 
 export const Route = createFileRoute("/watchlist")({
   head: () => ({
     meta: [
-      { title: "Watchlist — SPORTFLIX" },
+      { title: "Watchlist — WatchBox7" },
       { name: "description", content: "Your saved movies and highlights." },
     ],
   }),

@@ -11,9 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { Sidebar } from "../components/sportflix/Sidebar";
-import { Footer } from "../components/sportflix/Footer";
-import { Splash } from "../components/sportflix/Splash";
+import { Sidebar } from "../components/watchbox7/Sidebar";
+import { Footer } from "../components/watchbox7/Footer";
+import { Splash } from "../components/watchbox7/Splash";
 import { AuthProvider } from "../lib/auth";
 import { Toaster } from "sonner";
 import { WB_FAVICON } from "../lib/wb-favicon";

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Zap, Smartphone, CreditCard, Phone, Copy } from "lucide-react";
 import { toast } from "sonner";
-import { PREMIUM_PLANS } from "@/lib/sportflix-data";
+import { PREMIUM_PLANS } from "@/lib/watchbox7-data";
 import { supabase } from "@/integrations/supabase/client";
 
 const db = supabase as any;
@@ -21,7 +21,7 @@ const METHODS: { id: Method; label: string; icon: React.ReactNode; tag: string; 
 export const Route = createFileRoute("/premium")({
   head: () => ({
     meta: [
-      { title: "Premium — SPORTFLIX" },
+      { title: "Premium — WatchBox7" },
       { name: "description", content: "Go Premium for ad-free 4K, exclusive originals, and faster downloads." },
     ],
   }),

@@ -8,7 +8,7 @@ import { useAuth } from "@/lib/auth";
 import { resumableUpload } from "@/lib/resumable-upload";
 
 export const Route = createFileRoute("/admin")({
-  head: () => ({ meta: [{ title: "Admin — SPORTFLIX" }] }),
+  head: () => ({ meta: [{ title: "Admin — WatchBox7" }] }),
   component: AdminPage,
 });
 
@@ -65,7 +65,7 @@ function AdminPage() {
         <div className="max-w-md space-y-4 rounded-xl border border-border bg-surface p-8 text-center">
           <Crown className="mx-auto size-10 text-primary" />
           <h1 className="font-display text-2xl font-black">Admin access</h1>
-          <p className="text-sm text-muted-foreground">You need to sign in to manage SPORTFLIX.</p>
+          <p className="text-sm text-muted-foreground">You need to sign in to manage WatchBox7.</p>
           <Link to="/login" className="inline-block rounded-md bg-primary px-6 py-2 font-bold text-primary-foreground">
             Sign in
           </Link>
@@ -81,7 +81,7 @@ function AdminPage() {
           <Crown className="mx-auto size-10 text-primary" />
           <h1 className="font-display text-2xl font-black">Admin only</h1>
           <p className="text-sm text-muted-foreground">
-            This area is reserved for SPORTFLIX administrators.
+            This area is reserved for WatchBox7 administrators.
           </p>
           <Link to="/" className="inline-block rounded-md border border-border px-6 py-2 font-bold hover:border-primary hover:text-primary">
             Back home
@@ -97,7 +97,7 @@ function AdminPage() {
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="font-display text-4xl font-black tracking-tighter">Admin Console</h1>
-            <p className="text-sm text-muted-foreground">Upload, trend, and curate the SPORTFLIX library.</p>
+            <p className="text-sm text-muted-foreground">Upload, trend, and curate the WatchBox7 library.</p>
           </div>
           <span className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
             <Crown className="-mt-0.5 mr-1 inline size-3" /> Admin

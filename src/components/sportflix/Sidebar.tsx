@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
-  Home, Film, LayoutGrid, Crown, Bookmark, User, LogOut,
+  Home, Film, LayoutGrid, Bookmark, User, LogOut,
   Shield, Menu, X, Search,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
@@ -13,7 +13,6 @@ const NAV = [
   { to: "/movies", label: "Movies", icon: Film },
   { to: "/categories", label: "Categories", icon: LayoutGrid },
   { to: "/watchlist", label: "Watchlist", icon: Bookmark },
-  { to: "/premium", label: "Premium", icon: Crown },
 ];
 
 export function Sidebar() {
@@ -25,30 +24,48 @@ export function Sidebar() {
 
   return (
     <>
-      {/* MOBILE TOP BAR */}
-      <div className="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-black/85 px-4 backdrop-blur-md lg:hidden">
-        <button onClick={() => setOpen(true)} aria-label="Open menu" className="grid size-9 place-items-center rounded-md hover:bg-white/10">
+      {/* TOP BAR (all sizes) — hosts menu toggle + logo + search */}
+      <div className="fixed inset-x-0 top-0 z-50 flex h-14 items-center gap-3 border-b border-border bg-black/85 px-4 backdrop-blur-md">
+        <button
+          onClick={() => setOpen(true)}
+          aria-label="Open menu"
+          className="grid size-9 place-items-center rounded-md hover:bg-white/10"
+        >
           <Menu className="size-5" />
         </button>
-        <Link to="/"><WBMark size={34} /></Link>
-        <button onClick={() => setMobileSearch(v => !v)} aria-label="Search" className="grid size-9 place-items-center rounded-md hover:bg-white/10">
+        <Link to="/" className="flex items-center gap-2">
+          <WBMark size={32} />
+          <span className="hidden font-display text-sm font-black sm:inline">
+            Watch<span className="text-[#5a8dff]">Box7</span>
+          </span>
+        </Link>
+
+        <div className="ml-auto hidden flex-1 max-w-xl md:block">
+          <SearchAutocomplete />
+        </div>
+
+        <button
+          onClick={() => setMobileSearch(v => !v)}
+          aria-label="Search"
+          className="ml-auto grid size-9 place-items-center rounded-md hover:bg-white/10 md:hidden"
+        >
           <Search className="size-5" />
         </button>
       </div>
       {mobileSearch && (
-        <div className="fixed left-0 right-0 top-14 z-40 border-b border-border bg-black/95 p-3 lg:hidden">
+        <div className="fixed left-0 right-0 top-14 z-40 border-b border-border bg-black/95 p-3 md:hidden">
           <SearchAutocomplete compact />
         </div>
       )}
 
-      {/* MOBILE OVERLAY */}
+      {/* OVERLAY */}
       {open && (
-        <div className="fixed inset-0 z-[60] bg-black/70 lg:hidden" onClick={() => setOpen(false)} />
+        <div className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm" onClick={() => setOpen(false)} />
       )}
 
-      {/* SIDEBAR */}
+      {/* SIDEBAR — hidden until menu clicked (all sizes) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-[70] flex w-64 flex-col border-r border-border bg-[oklch(0.06_0_0)] transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-[70] flex w-64 flex-col border-r border-border bg-[oklch(0.06_0_0)] transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -56,10 +73,10 @@ export function Sidebar() {
           <Link to="/" onClick={() => setOpen(false)} className="flex items-center gap-2.5">
             <WBMark size={40} />
             <span className="font-display text-sm font-black leading-tight">
-              Watch<span className="text-[#5a8dff]">Box</span><span className="text-[#5a8dff]">7</span>
+              Watch<span className="text-[#5a8dff]">Box7</span>
             </span>
           </Link>
-          <button onClick={() => setOpen(false)} className="grid size-8 place-items-center rounded-md hover:bg-white/10 lg:hidden">
+          <button onClick={() => setOpen(false)} className="grid size-8 place-items-center rounded-md hover:bg-white/10">
             <X className="size-4" />
           </button>
         </div>
@@ -109,19 +126,6 @@ export function Sidebar() {
           )}
         </div>
       </aside>
-
-      {/* TOP STRIP (desktop) with search */}
-      <div className="fixed inset-x-0 top-0 z-40 hidden h-16 items-center gap-4 border-b border-border bg-black/60 pl-72 pr-8 backdrop-blur-md lg:flex">
-        <div className="flex-1 max-w-2xl">
-          <SearchAutocomplete />
-        </div>
-        <Link
-          to="/premium"
-          className="inline-flex items-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:scale-105"
-        >
-          <Crown className="size-4" /> Go Premium
-        </Link>
-      </div>
     </>
   );
 }

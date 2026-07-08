@@ -336,41 +336,38 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
 
         {/* SIDE PANEL — More movies (right) */}
         {showSidePanel && (
-          <aside className="flex w-full shrink-0 flex-col border-t border-border bg-background lg:w-[340px] lg:border-l lg:border-t-0">
-            <div className="flex items-center justify-between border-b border-border px-4 py-3">
-              <div className="min-w-0">
-                <h4 className="font-display text-xs font-black uppercase tracking-widest text-primary">
-                  More like this
+          <aside className="flex w-full shrink-0 flex-col border-t border-border bg-[#0a0a0a] lg:w-[380px] lg:border-l lg:border-t-0">
+            <div className="flex items-center justify-between px-5 pt-5 pb-3">
+              <div>
+                <h4 className="font-display text-lg font-black tracking-tight text-white">
+                  More Films
                 </h4>
-                <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
-                  {(active as any).genre || "All"}
-                  {(active as any).production_company ? ` · ${(active as any).production_company}` : ""}
-                </p>
+                <div className="mt-1 h-[3px] w-14 rounded-full bg-primary" />
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setPage((p) => Math.max(0, p - 1))}
                   disabled={page === 0}
-                  className="grid size-7 place-items-center rounded-full border border-border bg-surface transition hover:border-primary disabled:opacity-30"
+                  className="grid size-8 place-items-center rounded-full border border-border bg-surface transition hover:border-primary disabled:opacity-30"
                   aria-label="Previous"
                 >
-                  <ChevronLeft className="size-3.5" />
+                  <ChevronLeft className="size-4" />
                 </button>
-                <span className="text-[10px] font-bold tabular-nums text-muted-foreground">
+                <span className="w-10 text-center text-[10px] font-bold tabular-nums text-muted-foreground">
                   {page + 1}/{totalPages}
                 </span>
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
                   disabled={page >= totalPages - 1}
-                  className="grid size-7 place-items-center rounded-full border border-border bg-surface transition hover:border-primary disabled:opacity-30"
+                  className="grid size-8 place-items-center rounded-full border border-border bg-surface transition hover:border-primary disabled:opacity-30"
                   aria-label="Next"
                 >
-                  <ChevronRight className="size-3.5" />
+                  <ChevronRight className="size-4" />
                 </button>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-3">
+            <div className="flex-1 overflow-y-auto px-4 pb-5">
               {loadingRelated ? (
                 <div className="grid h-40 place-items-center">
                   <SFLoader size="sm" label="Loading" />
@@ -380,34 +377,37 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
                   No related movies yet.
                 </p>
               ) : (
-                <ul className="flex flex-col gap-2">
+                <ul className="grid grid-cols-2 gap-3">
                   {pageItems.map((m) => (
                     <li key={m.id}>
                       <button
                         onClick={() => switchTo(m)}
-                        className="group flex w-full gap-3 rounded-lg border border-border bg-surface p-2 text-left transition hover:border-primary hover:bg-surface-2"
+                        className="group block w-full text-left"
                       >
-                        <div className="relative aspect-video w-28 shrink-0 overflow-hidden rounded-md">
+                        <div className="relative aspect-square overflow-hidden rounded-lg border border-white/5 bg-surface-2">
                           <img
                             src={m.thumbnail || m.poster}
                             alt={m.title}
                             loading="lazy"
-                            className="size-full object-cover transition-transform duration-300 group-hover:scale-110"
+                            className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
                           />
-                          <div className="absolute inset-0 grid place-items-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                            <Play className="size-6 fill-white text-white" />
+                          {m.genre && (
+                            <span className="absolute left-2 top-2 rounded-md bg-primary px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-primary-foreground shadow-lg">
+                              {m.genre}
+                            </span>
+                          )}
+                          <div className="absolute inset-0 grid place-items-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                            <Play className="size-8 fill-white text-white" />
                           </div>
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="line-clamp-2 text-xs font-bold leading-snug">{m.title}</p>
-                          <p className="mt-1 truncate text-[10px] uppercase tracking-widest text-muted-foreground">
-                            {m.year}
-                            {m.genre ? ` · ${m.genre}` : ""}
+                        <p className="mt-2 line-clamp-2 text-sm font-bold leading-snug text-white group-hover:text-primary">
+                          {m.title}
+                        </p>
+                        {m.production_company && (
+                          <p className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                            {m.production_company}
                           </p>
-                          {m.production_company && (
-                            <p className="truncate text-[10px] text-primary/80">{m.production_company}</p>
-                          )}
-                        </div>
+                        )}
                       </button>
                     </li>
                   ))}

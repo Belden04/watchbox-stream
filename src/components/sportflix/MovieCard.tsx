@@ -30,7 +30,7 @@ export function MovieCard({ movie, progress, inWatchlist, onWatchlistChange }: P
 
   return (
     <>
-      <div className="group w-[180px] shrink-0 cursor-pointer space-y-3 md:w-[200px]" onClick={() => setOpen(true)}>
+      <div className="group w-[130px] shrink-0 cursor-pointer space-y-2 md:w-[150px]" onClick={() => setOpen(true)}>
         <div className="relative aspect-[2/3] overflow-hidden rounded-lg border border-border bg-surface-2 transition-all duration-300 group-hover:border-primary/60 group-hover:shadow-[0_0_30px_-5px_var(--color-primary)]">
           <img
             src={img}

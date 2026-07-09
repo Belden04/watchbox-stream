@@ -1,4 +1,4 @@
-import { Play, Download, Plus, Check } from "lucide-react";
+import { Play, Plus, Check } from "lucide-react";
 import { useState } from "react";
 import type { Movie } from "@/lib/sportflix-data";
 import { WatchDialog } from "./WatchDialog";

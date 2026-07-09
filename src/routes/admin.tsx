@@ -26,30 +26,19 @@ type Movie = {
   director: string;
   translator: string | null;
 };
-type Highlight = {
-  id: string;
-  title: string;
-  thumbnail_url: string;
-  video_url: string | null;
-  category: string;
-  duration: string;
-};
 
 function AdminPage() {
   const { user, isAdmin, loading, refreshRole } = useAuth();
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [stats, setStats] = useState({ downloads: 0, views: 0 });
 
   const load = async () => {
-    const [m, h, d, v] = await Promise.all([
+    const [m, d, v] = await Promise.all([
       db.from("movies").select("*").order("created_at", { ascending: false }),
-      db.from("highlights").select("*").order("created_at", { ascending: false }),
       db.from("downloads").select("id", { count: "exact", head: true }),
       db.from("views").select("id", { count: "exact", head: true }),
     ]);
     setMovies((m.data as Movie[]) ?? []);
-    setHighlights((h.data as Highlight[]) ?? []);
     setStats({ downloads: d.count ?? 0, views: v.count ?? 0 });
   };
 
@@ -113,8 +102,6 @@ function AdminPage() {
         <UploadMovieForm onDone={load} />
         <MovieList movies={movies} reload={load} />
 
-        <UploadHighlightForm onDone={load} />
-        <HighlightList highlights={highlights} reload={load} />
       </div>
     </div>
   );
@@ -360,101 +347,3 @@ function MovieList({ movies, reload }: { movies: Movie[]; reload: () => void }) 
   );
 }
 
-function UploadHighlightForm({ onDone }: { onDone: () => void }) {
-  const [busy, setBusy] = useState(false);
-  const [progress, setProgress] = useState({ label: "", pct: 0 });
-  const [thumb, setThumb] = useState<File | null>(null);
-  const [video, setVideo] = useState<File | null>(null);
-  const [form, setForm] = useState({ title: "", category: "Football", duration: "", description: "" });
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!thumb) return toast.error("Thumbnail required");
-    setBusy(true);
-    try {
-      setProgress({ label: "Uploading thumbnail…", pct: 0 });
-      const thumbnail_url = await uploadTo("thumbnails", thumb, (p) => setProgress({ label: "Uploading thumbnail…", pct: p }));
-      let video_url: string | null = null;
-      if (video) {
-        setProgress({ label: "Uploading video…", pct: 0 });
-        video_url = await uploadTo("videos", video, (p) => setProgress({ label: "Uploading video…", pct: p }));
-      }
-      const { error } = await db.from("highlights").insert({ ...form, thumbnail_url, video_url });
-      if (error) throw error;
-      toast.success("Highlight published");
-      setThumb(null);
-      setVideo(null);
-      setForm({ ...form, title: "", description: "" });
-      onDone();
-    } catch (err) {
-      toast.error((err as Error).message);
-    } finally {
-      setBusy(false);
-      setProgress({ label: "", pct: 0 });
-    }
-  };
-
-  return (
-    <section className="rounded-xl border border-border bg-surface p-6">
-      <h2 className="mb-4 font-display text-xl font-black">
-        <Upload className="-mt-1 mr-2 inline size-5 text-accent" />
-        Upload Highlight
-      </h2>
-      <form onSubmit={submit} className="grid gap-3 md:grid-cols-2">
-        <input required placeholder="Title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="input" />
-        <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="input">
-          {["Football", "Basketball", "Volleyball", "World Cup", "Champions League", "AFCON", "Rwanda League"].map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
-        <input placeholder="Duration (e.g. 10:32)" value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} className="input" />
-        <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="input md:col-span-2" rows={2} />
-        <label className="text-xs text-muted-foreground">
-          Thumbnail *
-          <input required type="file" accept="image/*" onChange={(e) => setThumb(e.target.files?.[0] ?? null)} className="mt-1 block w-full" />
-        </label>
-        <label className="text-xs text-muted-foreground">
-          Video file — from your PC
-          <input type="file" accept="video/*" onChange={(e) => setVideo(e.target.files?.[0] ?? null)} className="mt-1 block w-full" />
-        </label>
-        <ProgressBar value={progress.pct} label={progress.label} />
-        <button disabled={busy} className="rounded-md bg-accent py-3 font-bold text-accent-foreground hover:scale-[1.01] disabled:opacity-50 md:col-span-2">
-          {busy ? progress.label || "Uploading…" : "Publish highlight"}
-        </button>
-      </form>
-    </section>
-  );
-}
-
-function HighlightList({ highlights, reload }: { highlights: Highlight[]; reload: () => void }) {
-  const del = async (id: string) => {
-    if (!confirm("Delete this highlight?")) return;
-    const { error } = await db.from("highlights").delete().eq("id", id);
-    if (error) return toast.error(error.message);
-    toast.success("Deleted");
-    reload();
-  };
-  return (
-    <section>
-      <h2 className="mb-4 font-display text-xl font-black">Highlights library ({highlights.length})</h2>
-      {highlights.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No highlights uploaded yet.</p>
-      ) : (
-        <div className="grid gap-3">
-          {highlights.map((h) => (
-            <div key={h.id} className="flex items-center gap-4 rounded-lg border border-border bg-surface p-3">
-              <img src={h.thumbnail_url} alt={h.title} className="h-16 w-28 rounded object-cover" />
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-bold">{h.title}</p>
-                <p className="text-xs text-muted-foreground">{h.category} · {h.duration}</p>
-              </div>
-              <button onClick={() => del(h.id)} className="rounded-md border border-destructive/40 px-3 py-2 text-xs text-destructive hover:bg-destructive hover:text-destructive-foreground">
-                <Trash2 className="size-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </section>
-  );
-}

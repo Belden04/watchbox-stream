@@ -26,14 +26,6 @@ type Movie = {
   director: string;
   translator: string | null;
 };
-type Highlight = {
-  id: string;
-  title: string;
-  thumbnail_url: string;
-  video_url: string | null;
-  category: string;
-  duration: string;
-};
 
 function AdminPage() {
   const { user, isAdmin, loading, refreshRole } = useAuth();

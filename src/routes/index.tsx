@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Check, Zap } from "lucide-react";
 import { Hero } from "@/components/sportflix/Hero";
 import { Rail } from "@/components/sportflix/Rail";
 import { MovieCard } from "@/components/sportflix/MovieCard";
-import { mapMovieRow, PREMIUM_PLANS, type Movie } from "@/lib/sportflix-data";
+import { mapMovieRow, type Movie } from "@/lib/sportflix-data";
 import { supabase } from "@/integrations/supabase/client";
 
 const db = supabase as any;

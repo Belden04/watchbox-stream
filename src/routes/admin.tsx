@@ -102,8 +102,6 @@ function AdminPage() {
         <UploadMovieForm onDone={load} />
         <MovieList movies={movies} reload={load} />
 
-        <UploadHighlightForm onDone={load} />
-        <HighlightList highlights={highlights} reload={load} />
       </div>
     </div>
   );

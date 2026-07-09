@@ -30,18 +30,15 @@ type Movie = {
 function AdminPage() {
   const { user, isAdmin, loading, refreshRole } = useAuth();
   const [movies, setMovies] = useState<Movie[]>([]);
-  const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [stats, setStats] = useState({ downloads: 0, views: 0 });
 
   const load = async () => {
-    const [m, h, d, v] = await Promise.all([
+    const [m, d, v] = await Promise.all([
       db.from("movies").select("*").order("created_at", { ascending: false }),
-      db.from("highlights").select("*").order("created_at", { ascending: false }),
       db.from("downloads").select("id", { count: "exact", head: true }),
       db.from("views").select("id", { count: "exact", head: true }),
     ]);
     setMovies((m.data as Movie[]) ?? []);
-    setHighlights((h.data as Highlight[]) ?? []);
     setStats({ downloads: d.count ?? 0, views: v.count ?? 0 });
   };
 

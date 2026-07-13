@@ -35,17 +35,21 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
   const [pool, setPool] = useState<Movie[]>([]);
   const [loadingRelated, setLoadingRelated] = useState(false);
   const [page, setPage] = useState(0);
+  const [switching, setSwitching] = useState(false);
   const [active, setActive] = useState<Movie | { id?: string; title: string; video_url?: string | null; poster?: string; thumbnail?: string | null; genre?: string; production_company?: string; series_title?: string | null; season_number?: number | null; episode_number?: number | null }>(
     movie ?? { id: contentId, title, video_url: videoUrl, poster, thumbnail: poster },
   );
   const viewLogged = useRef(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Reset when opening
+  // Reset when opening (with a short cinematic curtain)
   useEffect(() => {
     if (open) {
       setActive(movie ?? { id: contentId, title, video_url: videoUrl, poster, thumbnail: poster });
       setPage(0);
+      setSwitching(true);
+      const t = window.setTimeout(() => setSwitching(false), 700);
+      return () => window.clearTimeout(t);
     }
   }, [open, movie, contentId, title, videoUrl, poster]);
 
@@ -122,12 +126,16 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
   };
 
   const switchTo = (m: Movie) => {
-    setActive(m);
-    viewLogged.current = false;
-    setProgress(0);
-    setDownloaded(false);
-    setDownloading(false);
-    setTimeout(() => videoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+    setSwitching(true);
+    setTimeout(() => {
+      setActive(m);
+      viewLogged.current = false;
+      setProgress(0);
+      setDownloaded(false);
+      setDownloading(false);
+      videoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => setSwitching(false), 500);
+    }, 250);
   };
 
   const activeVideoUrl = (active as any).video_url as string | null | undefined;

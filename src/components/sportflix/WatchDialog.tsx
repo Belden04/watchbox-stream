@@ -199,11 +199,30 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
       >
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 z-20 grid size-9 place-items-center rounded-full bg-black/70 text-white transition hover:bg-primary"
+          className="absolute right-3 top-3 z-30 grid size-9 place-items-center rounded-full bg-black/70 text-white transition hover:bg-primary"
           aria-label="Close"
         >
           <X className="size-4" />
         </button>
+
+        {/* Cinematic curtain — professional page-loading feel */}
+        <div
+          className={`pointer-events-none absolute inset-0 z-20 grid place-items-center bg-black transition-opacity duration-500 ${
+            switching ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative">
+              <span className="absolute inset-0 -m-3 animate-[wbring_1.4s_linear_infinite] rounded-full border-2 border-transparent border-t-[#1e5bff] border-r-[#1e5bff]/40" />
+              <SFLoader size="md" />
+            </div>
+            <p className="font-display text-[11px] font-black uppercase tracking-[0.4em] text-white/70">
+              Now Playing · {activeTitle}
+            </p>
+          </div>
+          <style>{`@keyframes wbring{to{transform:rotate(360deg)}}`}</style>
+        </div>
+
 
         {/* MAIN PLAYER */}
         <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">

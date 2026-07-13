@@ -139,9 +139,20 @@ function RootComponent() {
       <AuthProvider>
         <Splash />
         <div className="relative min-h-screen bg-background text-foreground">
-          {/* Cinematic backdrop */}
-          <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1200px_600px_at_10%_-10%,rgba(30,91,255,0.18),transparent_60%),radial-gradient(900px_500px_at_90%_10%,rgba(232,29,29,0.15),transparent_60%),linear-gradient(180deg,#050505,#0a0a0a)]" />
-          <div className="pointer-events-none fixed inset-0 -z-10 opacity-[0.05] [background-image:repeating-linear-gradient(0deg,transparent_0,transparent_2px,#fff_2px,#fff_3px)]" />
+          {/* Cinematic backdrop — film reel + spotlight ambience */}
+          <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(1200px_600px_at_10%_-10%,rgba(30,91,255,0.22),transparent_60%),radial-gradient(900px_500px_at_90%_10%,rgba(232,29,29,0.18),transparent_60%),linear-gradient(180deg,#050505,#0a0a0a)]" />
+          {/* Vertical film-strip pattern (subtle) */}
+          <div
+            className="pointer-events-none fixed inset-0 -z-10 opacity-[0.08]"
+            style={{
+              backgroundImage:
+                "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='120' viewBox='0 0 60 120'><rect width='60' height='120' fill='none'/><rect x='4' y='6' width='52' height='34' rx='3' fill='none' stroke='%23ffffff' stroke-width='1'/><rect x='4' y='46' width='52' height='34' rx='3' fill='none' stroke='%23ffffff' stroke-width='1'/><rect x='4' y='86' width='52' height='30' rx='3' fill='none' stroke='%23ffffff' stroke-width='1'/><circle cx='2' cy='12' r='1.2' fill='%23ffffff'/><circle cx='2' cy='30' r='1.2' fill='%23ffffff'/><circle cx='2' cy='52' r='1.2' fill='%23ffffff'/><circle cx='2' cy='70' r='1.2' fill='%23ffffff'/><circle cx='2' cy='92' r='1.2' fill='%23ffffff'/><circle cx='2' cy='110' r='1.2' fill='%23ffffff'/><circle cx='58' cy='12' r='1.2' fill='%23ffffff'/><circle cx='58' cy='30' r='1.2' fill='%23ffffff'/><circle cx='58' cy='52' r='1.2' fill='%23ffffff'/><circle cx='58' cy='70' r='1.2' fill='%23ffffff'/><circle cx='58' cy='92' r='1.2' fill='%23ffffff'/><circle cx='58' cy='110' r='1.2' fill='%23ffffff'/></svg>\")",
+              backgroundSize: "60px 120px",
+            }}
+          />
+          {/* Soft moving vignette */}
+          <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.7)_100%)]" />
+
           <Sidebar />
           <div className="flex min-h-screen flex-col pt-14">
             <main className="flex-1">

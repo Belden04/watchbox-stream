@@ -35,17 +35,21 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
   const [pool, setPool] = useState<Movie[]>([]);
   const [loadingRelated, setLoadingRelated] = useState(false);
   const [page, setPage] = useState(0);
+  const [switching, setSwitching] = useState(false);
   const [active, setActive] = useState<Movie | { id?: string; title: string; video_url?: string | null; poster?: string; thumbnail?: string | null; genre?: string; production_company?: string; series_title?: string | null; season_number?: number | null; episode_number?: number | null }>(
     movie ?? { id: contentId, title, video_url: videoUrl, poster, thumbnail: poster },
   );
   const viewLogged = useRef(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Reset when opening
+  // Reset when opening (with a short cinematic curtain)
   useEffect(() => {
     if (open) {
       setActive(movie ?? { id: contentId, title, video_url: videoUrl, poster, thumbnail: poster });
       setPage(0);
+      setSwitching(true);
+      const t = window.setTimeout(() => setSwitching(false), 700);
+      return () => window.clearTimeout(t);
     }
   }, [open, movie, contentId, title, videoUrl, poster]);
 
@@ -122,12 +126,16 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
   };
 
   const switchTo = (m: Movie) => {
-    setActive(m);
-    viewLogged.current = false;
-    setProgress(0);
-    setDownloaded(false);
-    setDownloading(false);
-    setTimeout(() => videoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+    setSwitching(true);
+    setTimeout(() => {
+      setActive(m);
+      viewLogged.current = false;
+      setProgress(0);
+      setDownloaded(false);
+      setDownloading(false);
+      videoRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      setTimeout(() => setSwitching(false), 500);
+    }, 250);
   };
 
   const activeVideoUrl = (active as any).video_url as string | null | undefined;
@@ -191,11 +199,30 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
       >
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 z-20 grid size-9 place-items-center rounded-full bg-black/70 text-white transition hover:bg-primary"
+          className="absolute right-3 top-3 z-30 grid size-9 place-items-center rounded-full bg-black/70 text-white transition hover:bg-primary"
           aria-label="Close"
         >
           <X className="size-4" />
         </button>
+
+        {/* Cinematic curtain — professional page-loading feel */}
+        <div
+          className={`pointer-events-none absolute inset-0 z-20 grid place-items-center bg-black transition-opacity duration-500 ${
+            switching ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative">
+              <span className="absolute inset-0 -m-3 animate-[wbring_1.4s_linear_infinite] rounded-full border-2 border-transparent border-t-[#1e5bff] border-r-[#1e5bff]/40" />
+              <SFLoader size="md" />
+            </div>
+            <p className="font-display text-[11px] font-black uppercase tracking-[0.4em] text-white/70">
+              Now Playing · {activeTitle}
+            </p>
+          </div>
+          <style>{`@keyframes wbring{to{transform:rotate(360deg)}}`}</style>
+        </div>
+
 
         {/* MAIN PLAYER */}
         <div className="flex min-w-0 flex-1 flex-col overflow-y-auto">

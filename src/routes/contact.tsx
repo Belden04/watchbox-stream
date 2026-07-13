@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { MessageCircle, Instagram, Music2, Facebook, Youtube, Send, Mail } from "lucide-react";
+import { MessageCircle, Instagram, Facebook, Youtube, Send, Mail, Sparkles, Globe } from "lucide-react";
+import { SOCIALS } from "@/lib/socials";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -12,14 +13,18 @@ export const Route = createFileRoute("/contact")({
   component: ContactPage,
 });
 
-const CHANNELS = [
-  { icon: MessageCircle, label: "WhatsApp", handle: "+250 7XX XXX XXX", href: "#", color: "text-accent" },
-  { icon: Instagram, label: "Instagram", handle: "@watchbox7", href: "#", color: "text-primary" },
-  { icon: Music2, label: "TikTok", handle: "@watchbox7", href: "#", color: "text-foreground" },
-  { icon: Facebook, label: "Facebook", handle: "WatchBox7", href: "#", color: "text-primary" },
-  { icon: Youtube, label: "YouTube", handle: "WatchBox7 Official", href: "#", color: "text-primary" },
-  { icon: Send, label: "Telegram", handle: "@watchbox7", href: "#", color: "text-accent" },
-];
+const ICONS: Record<string, any> = {
+  whatsapp: MessageCircle, instagram: Instagram, facebook: Facebook,
+  youtube: Youtube, telegram: Send, tiktok: Sparkles, x: Globe, email: Mail,
+};
+
+const CHANNELS = SOCIALS.map((s) => ({
+  icon: ICONS[s.key] ?? Globe,
+  label: s.label,
+  handle: s.handle,
+  href: s.href,
+  color: "text-primary",
+}));
 
 function ContactPage() {
   const [sent, setSent] = useState(false);
@@ -41,11 +46,13 @@ function ContactPage() {
               <a
                 key={c.label}
                 href={c.href}
+                target={c.href.startsWith("http") ? "_blank" : undefined}
+                rel="noopener noreferrer"
                 className="group rounded-xl border border-border bg-surface p-5 transition-all hover-lift"
               >
                 <c.icon className={`mb-3 size-6 ${c.color} transition-transform group-hover:scale-110`} />
                 <div className="font-display text-lg font-bold">{c.label}</div>
-                <div className="text-xs text-muted-foreground">{c.handle}</div>
+                <div className="truncate text-xs text-muted-foreground">{c.handle}</div>
               </a>
             ))}
           </div>

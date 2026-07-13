@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WatchlistRouteImport } from './routes/watchlist'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SportsRouteImport } from './routes/sports'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PremiumRouteImport } from './routes/premium'
 import { Route as MoviesRouteImport } from './routes/movies'
 import { Route as LoginRouteImport } from './routes/login'
@@ -26,9 +28,19 @@ const WatchlistRoute = WatchlistRouteImport.update({
   path: '/watchlist',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SportsRoute = SportsRouteImport.update({
   id: '/sports',
   path: '/sports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PremiumRoute = PremiumRouteImport.update({
@@ -87,7 +99,9 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/movies': typeof MoviesRoute
   '/premium': typeof PremiumRoute
+  '/privacy': typeof PrivacyRoute
   '/sports': typeof SportsRoute
+  '/terms': typeof TermsRoute
   '/watchlist': typeof WatchlistRoute
 }
 export interface FileRoutesByTo {
@@ -100,7 +114,9 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/movies': typeof MoviesRoute
   '/premium': typeof PremiumRoute
+  '/privacy': typeof PrivacyRoute
   '/sports': typeof SportsRoute
+  '/terms': typeof TermsRoute
   '/watchlist': typeof WatchlistRoute
 }
 export interface FileRoutesById {
@@ -114,7 +130,9 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/movies': typeof MoviesRoute
   '/premium': typeof PremiumRoute
+  '/privacy': typeof PrivacyRoute
   '/sports': typeof SportsRoute
+  '/terms': typeof TermsRoute
   '/watchlist': typeof WatchlistRoute
 }
 export interface FileRouteTypes {
@@ -129,7 +147,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/movies'
     | '/premium'
+    | '/privacy'
     | '/sports'
+    | '/terms'
     | '/watchlist'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -142,7 +162,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/movies'
     | '/premium'
+    | '/privacy'
     | '/sports'
+    | '/terms'
     | '/watchlist'
   id:
     | '__root__'
@@ -155,7 +177,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/movies'
     | '/premium'
+    | '/privacy'
     | '/sports'
+    | '/terms'
     | '/watchlist'
   fileRoutesById: FileRoutesById
 }
@@ -169,7 +193,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   MoviesRoute: typeof MoviesRoute
   PremiumRoute: typeof PremiumRoute
+  PrivacyRoute: typeof PrivacyRoute
   SportsRoute: typeof SportsRoute
+  TermsRoute: typeof TermsRoute
   WatchlistRoute: typeof WatchlistRoute
 }
 
@@ -182,11 +208,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WatchlistRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sports': {
       id: '/sports'
       path: '/sports'
       fullPath: '/sports'
       preLoaderRoute: typeof SportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/premium': {
@@ -265,19 +305,11 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   MoviesRoute: MoviesRoute,
   PremiumRoute: PremiumRoute,
+  PrivacyRoute: PrivacyRoute,
   SportsRoute: SportsRoute,
+  TermsRoute: TermsRoute,
   WatchlistRoute: WatchlistRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

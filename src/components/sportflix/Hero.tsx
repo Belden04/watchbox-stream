@@ -112,7 +112,7 @@ export function Hero({ movies }: { movies: Movie[] }) {
       </div>
 
       {/* Dots */}
-      <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+      <div className="relative z-20 flex justify-center gap-2 pb-4">
         {movies.map((_, i) => (
           <button
             key={i}
@@ -122,6 +122,7 @@ export function Hero({ movies }: { movies: Movie[] }) {
           />
         ))}
       </div>
+
 
       <WatchDialog
         open={open}

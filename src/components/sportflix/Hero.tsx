@@ -103,11 +103,12 @@ export function Hero({ movies }: { movies: Movie[] }) {
         </div>
 
         {/* RIGHT — Poster card */}
-        <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
-          <div className="relative aspect-[2/3] w-full max-w-[360px] overflow-hidden rounded-xl border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] lg:w-[360px]">
+        <div className="relative mx-auto w-full max-w-[220px] md:max-w-[260px] lg:max-w-none">
+          <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] lg:w-[280px]">
             <img key={slide.id} src={poster} alt={slide.title} className="size-full object-cover animate-kenburns" />
           </div>
         </div>
+
       </div>
 
       {/* Dots */}

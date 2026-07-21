@@ -55,9 +55,10 @@ export function Hero({ movies }: { movies: Movie[] }) {
           <span className="inline-flex items-center rounded bg-primary px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-primary-foreground">
             Featured
           </span>
-          <h1 className="font-display text-5xl font-black leading-[0.95] tracking-tight md:text-6xl lg:text-7xl">
+          <h1 className="font-display text-4xl font-black leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">
             {slide.title}
           </h1>
+
           <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
             {slide.genre && <span>{slide.genre}</span>}
             <span className="size-1 rounded-full bg-muted-foreground/60" />

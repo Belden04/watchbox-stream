@@ -26,7 +26,7 @@ export function MovieCard({ movie, progress, inWatchlist, onWatchlistChange }: P
     }
   };
 
-  const img = movie.poster || movie.thumbnail;
+  const img = movie.poster || movie.thumbnail || undefined;
 
   return (
     <>

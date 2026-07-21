@@ -38,7 +38,7 @@ export function Hero({ movies }: { movies: Movie[] }) {
   const bg = slide.thumbnail || slide.poster;
 
   return (
-    <section className="relative min-h-[86vh] w-full overflow-hidden">
+    <section className="relative w-full overflow-hidden">
       {/* Ambient background */}
       {movies.map((s, i) => (
         <div key={s.id} className={`absolute inset-0 transition-opacity duration-1000 ${i === idx ? "opacity-100" : "opacity-0"}`}>
@@ -48,7 +48,8 @@ export function Hero({ movies }: { movies: Movie[] }) {
         </div>
       ))}
 
-      <div className="relative z-10 mx-auto grid h-full min-h-[86vh] max-w-[1500px] items-center gap-10 px-6 py-16 md:px-10 lg:grid-cols-[1fr_auto]">
+      <div className="relative z-10 mx-auto grid max-w-[1500px] items-center gap-8 px-6 py-10 md:px-10 md:py-14 lg:grid-cols-[1fr_auto] lg:gap-10">
+
         {/* LEFT — Text */}
         <div key={slide.id} className="animate-slide-up max-w-xl space-y-5">
           <span className="inline-flex items-center rounded bg-primary px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-primary-foreground">

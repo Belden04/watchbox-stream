@@ -38,7 +38,7 @@ export function Hero({ movies }: { movies: Movie[] }) {
   const bg = slide.thumbnail || slide.poster;
 
   return (
-    <section className="relative min-h-[86vh] w-full overflow-hidden">
+    <section className="relative w-full overflow-hidden">
       {/* Ambient background */}
       {movies.map((s, i) => (
         <div key={s.id} className={`absolute inset-0 transition-opacity duration-1000 ${i === idx ? "opacity-100" : "opacity-0"}`}>
@@ -48,15 +48,17 @@ export function Hero({ movies }: { movies: Movie[] }) {
         </div>
       ))}
 
-      <div className="relative z-10 mx-auto grid h-full min-h-[86vh] max-w-[1500px] items-center gap-10 px-6 py-16 md:px-10 lg:grid-cols-[1fr_auto]">
+      <div className="relative z-10 mx-auto grid max-w-[1500px] items-center gap-8 px-6 py-10 md:px-10 md:py-14 lg:grid-cols-[1fr_auto] lg:gap-10">
+
         {/* LEFT — Text */}
         <div key={slide.id} className="animate-slide-up max-w-xl space-y-5">
           <span className="inline-flex items-center rounded bg-primary px-2.5 py-1 text-[10px] font-black uppercase tracking-widest text-primary-foreground">
             Featured
           </span>
-          <h1 className="font-display text-5xl font-black leading-[0.95] tracking-tight md:text-6xl lg:text-7xl">
+          <h1 className="font-display text-4xl font-black leading-[0.95] tracking-tight md:text-5xl lg:text-6xl">
             {slide.title}
           </h1>
+
           <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
             {slide.genre && <span>{slide.genre}</span>}
             <span className="size-1 rounded-full bg-muted-foreground/60" />
@@ -101,15 +103,16 @@ export function Hero({ movies }: { movies: Movie[] }) {
         </div>
 
         {/* RIGHT — Poster card */}
-        <div className="relative mx-auto w-full max-w-sm lg:max-w-none">
-          <div className="relative aspect-[2/3] w-full max-w-[360px] overflow-hidden rounded-xl border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] lg:w-[360px]">
+        <div className="relative mx-auto w-full max-w-[220px] md:max-w-[260px] lg:max-w-none">
+          <div className="relative aspect-[2/3] w-full overflow-hidden rounded-xl border border-white/10 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.9)] lg:w-[280px]">
             <img key={slide.id} src={poster} alt={slide.title} className="size-full object-cover animate-kenburns" />
           </div>
         </div>
+
       </div>
 
       {/* Dots */}
-      <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+      <div className="relative z-20 flex justify-center gap-2 pb-4">
         {movies.map((_, i) => (
           <button
             key={i}
@@ -119,6 +122,7 @@ export function Hero({ movies }: { movies: Movie[] }) {
           />
         ))}
       </div>
+
 
       <WatchDialog
         open={open}

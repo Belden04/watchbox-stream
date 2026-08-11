@@ -320,6 +320,13 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
             </div>
           </div>
           <div className="ml-auto flex items-center gap-2">
+            <button
+              onClick={() => openTrailer(activeTitle, active.year, active.series_title)}
+              className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-2 text-[11px] font-bold text-white transition hover:border-[#ff0000] hover:bg-[#ff0000]/15"
+              title="Watch the trailer on YouTube"
+            >
+              <Youtube className="size-3.5 text-[#ff3b3b]" /> Trailer
+            </button>
             {activeVideoUrl && (
               <button
                 onClick={handleDownload}

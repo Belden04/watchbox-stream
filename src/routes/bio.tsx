@@ -73,7 +73,7 @@ function AboutPage() {
                 ))}
               </div>
               <div className="flex flex-wrap justify-center gap-3 pt-4">
-                <Link to="/movies" className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:scale-105">
+                <Link to="/movies" search={{ q: "", company: "" }} className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:scale-105">
                   <Play className="size-4 fill-current" /> Browse Movies
                 </Link>
                 <Link to="/categories" className="inline-flex items-center gap-2 rounded-md border border-border bg-black/40 px-5 py-2.5 text-sm font-bold hover:bg-white/10">

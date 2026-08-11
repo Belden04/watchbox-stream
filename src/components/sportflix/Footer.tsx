@@ -48,7 +48,7 @@ export function Footer() {
         <div className="space-y-4">
           <h4 className="text-xs font-bold uppercase tracking-[0.2em]">Platform</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/movies" className="hover:text-[#5a8dff]">Movies</Link></li>
+            <li><Link to="/movies" search={{ q: "", company: "" }} className="hover:text-[#5a8dff]">Movies</Link></li>
             <li><Link to="/categories" className="hover:text-[#5a8dff]">Categories</Link></li>
             <li><Link to="/watchlist" className="hover:text-[#5a8dff]">Watchlist</Link></li>
           </ul>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Play, Film } from "lucide-react";
+import { Play, Film, Youtube } from "lucide-react";
 import type { Movie } from "@/lib/sportflix-data";
 import { WatchDialog } from "./WatchDialog";
+import { openTrailer } from "@/lib/trailer";
 import { Link } from "@tanstack/react-router";
 
 export function Hero({ movies }: { movies: Movie[] }) {
@@ -94,10 +95,10 @@ export function Hero({ movies }: { movies: Movie[] }) {
               Watch Now
             </button>
             <button
-              onClick={() => setOpen(true)}
-              className="rounded-md border border-border bg-black/50 px-6 py-3 text-sm font-bold hover:bg-white/10"
+              onClick={() => openTrailer(slide.title, slide.year, slide.series_title)}
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-black/50 px-6 py-3 text-sm font-bold transition hover:border-[#ff0000] hover:bg-[#ff0000]/15"
             >
-              Trailer
+              <Youtube className="size-4 text-[#ff3b3b]" /> Trailer
             </button>
           </div>
         </div>

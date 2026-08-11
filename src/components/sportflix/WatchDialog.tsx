@@ -15,7 +15,9 @@ import {
   RotateCw,
   ListVideo,
   Settings2,
+  Youtube,
 } from "lucide-react";
+import { openTrailer } from "@/lib/trailer";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   recordView,

@@ -92,7 +92,7 @@ function WatchlistPage() {
                 Tap <span className="font-bold text-primary">+</span> on any movie or highlight to save it.
               </p>
               <div className="mt-6 flex justify-center gap-3">
-                <Link to="/movies" className="rounded-md bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:scale-105">Browse Movies</Link>
+                <Link to="/movies" search={{ q: "", company: "" }} className="rounded-md bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:scale-105">Browse Movies</Link>
                 <Link to="/sports" className="rounded-md border border-border bg-surface-2 px-5 py-2.5 text-sm font-bold hover:border-primary">Browse Highlights</Link>
               </div>
             </div>

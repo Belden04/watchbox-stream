@@ -42,6 +42,7 @@ function CategoriesPage() {
               <Link
                 key={c}
                 to="/movies"
+                search={{ q: "", company: "" }}
                 className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-5 transition-all hover:-translate-y-1 hover:border-[#1e5bff]/60"
               >
                 <div className={`absolute -right-8 -top-8 size-40 rounded-full bg-gradient-to-br ${grad} blur-2xl transition-opacity group-hover:opacity-90`} />

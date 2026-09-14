@@ -66,6 +66,7 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
   const [downloaded, setDownloaded] = useState(false);
   const [pool, setPool] = useState<Movie[]>([]);
   const [drawer, setDrawer] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const [booting, setBooting] = useState(true);
 
   // player state

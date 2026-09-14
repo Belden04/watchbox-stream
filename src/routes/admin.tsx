@@ -101,6 +101,7 @@ function AdminPage() {
 
         <UploadMovieForm onDone={load} />
         <MovieList movies={movies} reload={load} />
+        <CommentsAdmin movies={movies} />
 
       </div>
     </div>

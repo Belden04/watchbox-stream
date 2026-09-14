@@ -347,6 +347,16 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
                 )}
               </button>
             )}
+            <button
+              onClick={() => setCommentsOpen((c) => !c)}
+              className={`grid size-9 place-items-center rounded-full border transition ${
+                commentsOpen ? "border-primary bg-primary text-primary-foreground" : "border-white/10 bg-white/5 text-white hover:border-primary"
+              }`}
+              aria-label="Comments"
+              title="Comments"
+            >
+              <MessageCircle className="size-4" />
+            </button>
             {contentType === "movie" && (
               <button
                 onClick={() => setDrawer((d) => !d)}

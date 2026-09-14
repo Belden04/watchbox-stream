@@ -16,7 +16,9 @@ import {
   ListVideo,
   Settings2,
   Youtube,
+  MessageCircle,
 } from "lucide-react";
+import { CommentsPanel } from "./CommentsPanel";
 import { openTrailer } from "@/lib/trailer";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -64,6 +66,7 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
   const [downloaded, setDownloaded] = useState(false);
   const [pool, setPool] = useState<Movie[]>([]);
   const [drawer, setDrawer] = useState(false);
+  const [commentsOpen, setCommentsOpen] = useState(false);
   const [booting, setBooting] = useState(true);
 
   // player state
@@ -344,6 +347,16 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
                 )}
               </button>
             )}
+            <button
+              onClick={() => setCommentsOpen((c) => !c)}
+              className={`grid size-9 place-items-center rounded-full border transition ${
+                commentsOpen ? "border-primary bg-primary text-primary-foreground" : "border-white/10 bg-white/5 text-white hover:border-primary"
+              }`}
+              aria-label="Comments"
+              title="Comments"
+            >
+              <MessageCircle className="size-4" />
+            </button>
             {contentType === "movie" && (
               <button
                 onClick={() => setDrawer((d) => !d)}
@@ -669,6 +682,38 @@ export function WatchDialog({ open, onClose, title, videoUrl, poster, contentTyp
             </aside>
           </>
         )}
+
+        {/* COMMENTS DRAWER */}
+        <>
+          <div
+            onClick={() => setCommentsOpen(false)}
+            className={`absolute inset-0 z-40 bg-black/60 transition-opacity duration-300 ${
+              commentsOpen ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
+          />
+          <aside
+            className={`absolute right-0 top-0 z-50 flex h-full w-[92%] max-w-[380px] flex-col border-l border-white/10 bg-[#08090c]/95 backdrop-blur-xl transition-transform duration-500 [transition-timing-function:cubic-bezier(0.22,1,0.36,1)] ${
+              commentsOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            <div className="flex items-center justify-between px-5 py-4">
+              <div>
+                <h4 className="font-display text-base font-black tracking-tight text-white">Comments</h4>
+                <div className="mt-1 h-[3px] w-12 rounded-full bg-primary" />
+              </div>
+              <button
+                onClick={() => setCommentsOpen(false)}
+                className="grid size-8 place-items-center rounded-full border border-white/10 text-white hover:border-primary"
+                aria-label="Close comments"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+            <div className="min-h-0 flex-1">
+              {commentsOpen && <CommentsPanel movieId={activeId} />}
+            </div>
+          </aside>
+        </>
       </div>
     </div>
   );

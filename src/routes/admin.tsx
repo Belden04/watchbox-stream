@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Trash2, Upload, Star, Crown, BarChart3, Download as DownloadIcon, Eye } from "lucide-react";
+import { Trash2, Upload, Star, Crown, BarChart3, Download as DownloadIcon, Eye, Pin, PinOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 const db = supabase as any;
 import { useAuth } from "@/lib/auth";
@@ -101,6 +101,7 @@ function AdminPage() {
 
         <UploadMovieForm onDone={load} />
         <MovieList movies={movies} reload={load} />
+        <CommentsAdmin movies={movies} />
 
       </div>
     </div>
@@ -347,3 +348,108 @@ function MovieList({ movies, reload }: { movies: Movie[]; reload: () => void }) 
   );
 }
 
+
+type CommentRow = {
+  id: string;
+  movie_id: string | null;
+  name: string;
+  body: string;
+  is_pinned: boolean;
+  created_at: string;
+};
+
+function CommentsAdmin({ movies }: { movies: Movie[] }) {
+  const [rows, setRows] = useState<CommentRow[]>([]);
+  const [name, setName] = useState("WatchBox7");
+  const [body, setBody] = useState("");
+  const titles = new Map(movies.map((m) => [m.id, m.title]));
+
+  const load = async () => {
+    const { data } = await db
+      .from("comments")
+      .select("*")
+      .order("is_pinned", { ascending: false })
+      .order("created_at", { ascending: false })
+      .limit(300);
+    setRows((data as CommentRow[]) ?? []);
+  };
+
+  useEffect(() => { void load(); }, []);
+
+  const pinToAll = async (c: CommentRow) => {
+    const { error } = await db.from("comments").update({ is_pinned: true, movie_id: null }).eq("id", c.id);
+    if (error) return toast.error(error.message);
+    toast.success("Pinned to every movie");
+    load();
+  };
+
+  const unpin = async (c: CommentRow) => {
+    const { error } = await db.from("comments").update({ is_pinned: false }).eq("id", c.id);
+    if (error) return toast.error(error.message);
+    toast.success("Unpinned");
+    load();
+  };
+
+  const del = async (id: string) => {
+    if (!confirm("Delete this comment?")) return;
+    const { error } = await db.from("comments").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    toast.success("Deleted");
+    load();
+  };
+
+  const addPinned = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !body.trim()) return toast.error("Add a name and a message.");
+    const { error } = await db.from("comments").insert({ name: name.trim(), body: body.trim(), is_pinned: true, movie_id: null });
+    if (error) return toast.error(error.message);
+    setBody("");
+    toast.success("Pinned message added to all movies");
+    load();
+  };
+
+  return (
+    <section>
+      <h2 className="mb-4 font-display text-xl font-black">Comments ({rows.length})</h2>
+
+      <form onSubmit={addPinned} className="mb-6 grid gap-3 rounded-xl border border-primary/30 bg-primary/5 p-4 md:grid-cols-[220px_1fr_auto]">
+        <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Display name" className="rounded-md border border-border bg-surface px-3 py-2 text-sm" />
+        <input value={body} onChange={(e) => setBody(e.target.value)} placeholder="Pinned message shown on every movie…" className="rounded-md border border-border bg-surface px-3 py-2 text-sm" />
+        <button className="rounded-md bg-primary px-5 py-2 text-sm font-bold text-primary-foreground">Pin to all</button>
+      </form>
+
+      {rows.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No comments yet.</p>
+      ) : (
+        <div className="grid gap-3">
+          {rows.map((c) => (
+            <div key={c.id} className={`flex items-start gap-4 rounded-lg border p-3 ${c.is_pinned ? "border-primary/50 bg-primary/5" : "border-border bg-surface"}`}>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-bold">
+                  {c.name}
+                  {c.is_pinned && <span className="ml-2 rounded bg-primary px-1.5 py-0.5 text-[10px] text-primary-foreground">PINNED — ALL MOVIES</span>}
+                </p>
+                <p className="mt-1 whitespace-pre-wrap break-words text-sm text-muted-foreground">{c.body}</p>
+                <p className="mt-1 text-xs text-muted-foreground/70">
+                  {c.movie_id ? titles.get(c.movie_id) ?? "Movie" : "Global"} · {new Date(c.created_at).toLocaleString()}
+                </p>
+              </div>
+              {c.is_pinned ? (
+                <button onClick={() => unpin(c)} className="rounded-md border border-border px-3 py-2 text-xs hover:border-primary" title="Unpin">
+                  <PinOff className="size-4" />
+                </button>
+              ) : (
+                <button onClick={() => pinToAll(c)} className="rounded-md border border-border px-3 py-2 text-xs hover:border-primary" title="Pin to all movies">
+                  <Pin className="size-4" />
+                </button>
+              )}
+              <button onClick={() => del(c.id)} className="rounded-md border border-destructive/40 px-3 py-2 text-xs text-destructive hover:bg-destructive hover:text-destructive-foreground">
+                <Trash2 className="size-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}

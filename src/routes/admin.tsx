@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 const db = supabase as any;
 import { useAuth } from "@/lib/auth";
 import { resumableUpload } from "@/lib/resumable-upload";
+import { captureVideoThumbnail } from "@/lib/video-thumbnail";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — WatchBox7" }] }),
@@ -182,10 +183,15 @@ function UploadMovieForm({ onDone }: { onDone: () => void }) {
     try {
       setProgress({ label: "Uploading poster…", pct: 0 });
       const poster_url = await uploadTo("posters", poster, (p) => setProgress({ label: "Uploading poster…", pct: p }));
+      let thumbFile = thumb;
+      if (!thumbFile && video) {
+        setProgress({ label: "Generating thumbnail from video…", pct: 0 });
+        thumbFile = await captureVideoThumbnail(video);
+      }
       let thumbnail_url: string | null = null;
-      if (thumb) {
+      if (thumbFile) {
         setProgress({ label: "Uploading thumbnail…", pct: 0 });
-        thumbnail_url = await uploadTo("thumbnails", thumb, (p) => setProgress({ label: "Uploading thumbnail…", pct: p }));
+        thumbnail_url = await uploadTo("thumbnails", thumbFile, (p) => setProgress({ label: "Uploading thumbnail…", pct: p }));
       }
       let video_url: string | null = null;
       if (video) {

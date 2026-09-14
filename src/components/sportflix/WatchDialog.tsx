@@ -16,7 +16,9 @@ import {
   ListVideo,
   Settings2,
   Youtube,
+  MessageCircle,
 } from "lucide-react";
+import { CommentsPanel } from "./CommentsPanel";
 import { openTrailer } from "@/lib/trailer";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
